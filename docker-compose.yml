@@ -1,0 +1,19 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: nubbix-api
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    restart: unless-stopped
+    networks:
+      - nubbix-network
+
+networks:
+  nubbix-network:
+    driver: bridge
+
