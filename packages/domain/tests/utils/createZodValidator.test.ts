@@ -50,7 +50,7 @@ describe("createZodValidator", () => {
 
     try {
       validator.validate(invalidInput);
-      expect(true).toBe(false); // Should not reach here
+      expect(true).toBe(false);
     } catch (error) {
       expect(error).toBeInstanceOf(ValidationError);
       if (error instanceof ValidationError) {
