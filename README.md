@@ -254,17 +254,39 @@ import { User } from "../../../packages/domain/src";
 
 ## CI/CD
 
-O projeto inclui GitHub Actions configurado em `.github/workflows/ci.yml` que executa:
+O projeto inclui GitHub Actions configurado em `.github/workflows/`:
+
+### CI Workflow (`ci.yml`)
+
+Executa automaticamente:
 
 - **Lint**: Verificação de código em todos os pacotes
 - **Typecheck**: Verificação de tipos TypeScript
 - **Testes**: Execução de todos os testes
 - **Build**: Compilação de todos os pacotes e apps
 
-O workflow é executado automaticamente em:
+O workflow é executado em:
 
 - Push para `main` ou `develop`
 - Pull requests para `main` ou `develop`
+
+### Database Migrations (`migrate.yml`)
+
+Executa migrations do banco de dados automaticamente quando há mudanças no schema ou nas migrations.
+
+**Configuração:**
+
+1. Configure o secret `DATABASE_URL` no GitHub:
+   - Vá em Settings → Secrets and variables → Actions
+   - Adicione `DATABASE_URL` com a connection string do PostgreSQL de produção
+
+2. O workflow executa automaticamente quando:
+   - Push para `main` com mudanças em:
+     - `apps/api/drizzle/**` (novas migrations)
+     - `apps/api/src/shared/infrastructure/db/schema.ts` (mudanças no schema)
+     - `apps/api/drizzle.config.ts` (configuração do Drizzle)
+
+**Nota:** As migrations são executadas apenas na branch `main` para evitar aplicar migrations em ambientes de desenvolvimento.
 
 ## Docker
 
