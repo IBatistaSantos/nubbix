@@ -19,8 +19,7 @@
     "prepare": "husky",
     "db:generate": "cd apps/api && bunx drizzle-kit generate",
     "db:migrate": "cd apps/api && bunx drizzle-kit migrate",
-    "db:push": "cd apps/api && bunx drizzle-kit push",
-    "db:reset": "cd apps/api && bun run db:reset"
+    "db:push": "cd apps/api && bunx drizzle-kit push"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",

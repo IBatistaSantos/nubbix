@@ -5,11 +5,20 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+  workflow_run:
+    workflows: ["Database Migrations"]
+    types:
+      - completed
+    branches: [main]
 
 jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,6 +37,10 @@ jobs:
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -46,6 +59,10 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -72,6 +89,10 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
