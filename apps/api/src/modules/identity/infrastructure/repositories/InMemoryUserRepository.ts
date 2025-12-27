@@ -62,4 +62,3 @@ export class InMemoryUserRepository implements UserRepository {
     return this.users.has(id.value);
   }
 }
-
