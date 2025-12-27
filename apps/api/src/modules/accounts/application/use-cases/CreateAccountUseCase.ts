@@ -1,7 +1,11 @@
 import { BaseUseCase, createZodValidator } from "@nubbix/domain";
 import { Account, AccountRepository, AccountType, Slug } from "../../domain";
 import { User, UserRepository, RoleValue } from "../../../identity/domain";
-import { CreateAccountInput, CreateAccountOutput, createAccountSchema } from "../dtos/CreateAccountDTO";
+import {
+  CreateAccountInput,
+  CreateAccountOutput,
+  createAccountSchema,
+} from "../dtos/CreateAccountDTO";
 import { generateRandomPassword } from "../../../../shared/utils";
 import { PasswordHasher } from "../services/PasswordHasher";
 import { ConflictError } from "../../../../shared/errors";
@@ -63,4 +67,3 @@ export class CreateAccountUseCase extends BaseUseCase<CreateAccountInput, Create
     };
   }
 }
-

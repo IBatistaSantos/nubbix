@@ -6,4 +6,3 @@ export interface AccountRepository extends Repository<Account> {
   findBySlug(slug: Slug): Promise<Account | null>;
   existsBySlug(slug: Slug): Promise<boolean>;
 }
-

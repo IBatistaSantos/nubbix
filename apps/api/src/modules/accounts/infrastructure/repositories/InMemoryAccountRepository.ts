@@ -39,4 +39,3 @@ export class InMemoryAccountRepository implements AccountRepository {
     return this.accounts.has(id.value);
   }
 }
-

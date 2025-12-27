@@ -18,7 +18,10 @@ export interface CreateAccountOutput {
 }
 
 export const createAccountSchema = z.object({
-  accountName: z.string().min(1, "Account name cannot be empty").max(255, "Account name cannot exceed 255 characters"),
+  accountName: z
+    .string()
+    .min(1, "Account name cannot be empty")
+    .max(255, "Account name cannot exceed 255 characters"),
   slug: z.string().min(1, "Slug cannot be empty"),
   description: z
     .string()
@@ -38,7 +41,9 @@ export const createAccountSchema = z.object({
   accountType: z.enum(["TRANSACTIONAL", "RECURRING"], {
     errorMap: () => ({ message: "Account type must be TRANSACTIONAL or RECURRING" }),
   }),
-  responsibleName: z.string().min(1, "Responsible name cannot be empty").max(255, "Responsible name cannot exceed 255 characters"),
+  responsibleName: z
+    .string()
+    .min(1, "Responsible name cannot be empty")
+    .max(255, "Responsible name cannot exceed 255 characters"),
   responsibleEmail: z.string().email("Invalid email format"),
 });
-
