@@ -14,8 +14,9 @@
     "test:integration": "find src/modules -name '*.test.ts' -exec bun test {} +"
   },
   "dependencies": {
+    "@nubbix/domain": "workspace:*",
     "hono": "^4.7.0",
-    "@nubbix/domain": "workspace:*"
+    "zod": "3.23.8"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.3.0",
