@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun run --watch index.ts",
-    "start": "bun run index.ts"
+    "start": "bun run index.ts",
+    "test": "echo 'no tests'"
   },
   "dependencies": {
     "hono": "^4.7.0"

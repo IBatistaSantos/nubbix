@@ -9,7 +9,8 @@
   },
   "scripts": {
     "lint": "echo 'lint'",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "echo 'no tests'"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.1",
