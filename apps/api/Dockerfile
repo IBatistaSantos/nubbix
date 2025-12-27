@@ -31,9 +31,10 @@ FROM oven/bun:1.3.4-slim AS production
 WORKDIR /app
 
 # Copy only production dependencies
+# Use lockfile from deps stage (which may have been updated)
 COPY --from=deps /app/package.json ./
 COPY --from=deps /app/bun.lock* ./
-RUN bun install --frozen-lockfile --production
+RUN bun install --production
 
 # Copy built application and necessary files
 COPY --from=builder /app/packages ./packages
