@@ -2,7 +2,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: apps/api/Dockerfile
+      dockerfile: apps/api/Dockerfile.dev
     container_name: nubbix-api
     ports:
       - "3001:3001"
@@ -12,8 +12,28 @@ services:
     restart: unless-stopped
     networks:
       - nubbix-network
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: nubbix-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=app_dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - nubbix-network
 
 networks:
   nubbix-network:
     driver: bridge
+
+volumes:
+  postgres_data:
 
