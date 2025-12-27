@@ -14,9 +14,9 @@
     "test:integration": "find src/modules -name '*.test.ts' -exec bun test {} +",
     "db:generate": "bunx drizzle-kit generate",
     "db:migrate": "bunx drizzle-kit migrate",
+    "db:migrate:script": "bun run scripts/migrate.ts",
     "db:push": "bunx drizzle-kit push",
-    "db:studio": "bunx drizzle-kit studio",
-    "db:reset": "bun run scripts/reset-db.ts"
+    "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
     "@nubbix/domain": "workspace:*",
