@@ -5,10 +5,8 @@ import { InMemoryAccountRepository } from "../../../infrastructure/repositories/
 import { InMemoryUserRepository } from "../../../../identity/infrastructure/repositories/InMemoryUserRepository";
 import { BunPasswordHasher } from "../../../infrastructure/services/BunPasswordHasher";
 import { Account, AccountTypeValue } from "../../../domain";
-import { RoleValue } from "../../../../identity/domain";
-import { Email, ID, ValidationError } from "@nubbix/domain";
+import { ID } from "@nubbix/domain";
 import { ConflictError } from "../../../../../shared/errors";
-import { z } from "zod";
 
 describe("CreateAccountUseCase", () => {
   let useCase: CreateAccountUseCase;
