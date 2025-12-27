@@ -26,6 +26,16 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Verify DATABASE_URL secret
+        run: |
+          if [ -z "${{ secrets.DATABASE_URL }}" ]; then
+            echo "❌ ERROR: DATABASE_URL secret is not configured"
+            echo "Please configure it in: Settings → Secrets and variables → Actions"
+            exit 1
+          else
+            echo "✅ DATABASE_URL secret is configured"
+          fi
+
       - name: Run migrations
         working-directory: apps/api
         env:

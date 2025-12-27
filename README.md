@@ -277,8 +277,13 @@ Executa migrations do banco de dados automaticamente quando há mudanças no sch
 **Configuração:**
 
 1. Configure o secret `DATABASE_URL` no GitHub:
-   - Vá em Settings → Secrets and variables → Actions
-   - Adicione `DATABASE_URL` com a connection string do PostgreSQL de produção
+   - Vá em: **Settings** → **Secrets and variables** → **Actions**
+   - Clique em **New repository secret**
+   - Nome: `DATABASE_URL`
+   - Valor: A connection string do PostgreSQL de produção (ex: `postgresql://user:password@host:port/database`)
+   - Clique em **Add secret**
+
+   **Importante:** O secret deve estar configurado no ambiente `production` se você estiver usando environments no GitHub.
 
 2. O workflow executa automaticamente quando:
    - Push para `main` com mudanças em:
