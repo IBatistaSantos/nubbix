@@ -38,8 +38,8 @@ COPY --from=deps /app/bun.lock* ./
 COPY --from=deps /app/packages ./packages
 COPY --from=deps /app/turbo.json ./
 
-# Install only production dependencies
-RUN bun install --production
+# Install dependencies (production mode by default in NODE_ENV=production)
+RUN bun install
 
 # Copy built application and necessary files
 COPY --from=builder /app/packages ./packages
