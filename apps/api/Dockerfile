@@ -1,38 +1,23 @@
-FROM oven/bun:1.3.4-slim AS deps
+FROM oven/bun:1.3.4-slim AS builder
 WORKDIR /app
 
 COPY package.json bun.lock* ./
 COPY packages ./packages
-COPY apps/api/package.json ./apps/api/
-COPY turbo.json ./
-
-RUN bun install
-
-FROM oven/bun:1.3.4-slim AS builder
-WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/package.json ./
-COPY --from=deps /app/bun.lock* ./
-
-COPY packages ./packages
 COPY apps/api ./apps/api
 COPY turbo.json ./
 
+RUN bun install
 RUN bun run apps/api/build || echo "No build script, skipping"
 
 FROM oven/bun:1.3.4-slim AS production
 WORKDIR /app
 
-COPY --from=deps /app/package.json ./
-COPY --from=deps /app/bun.lock* ./
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages ./packages
-COPY --from=deps /app/turbo.json ./
-COPY --from=deps /app/apps/api/package.json ./apps/api/
-
-COPY --from=builder /app/apps/api/src ./apps/api/src
-COPY --from=builder /app/apps/api/index.ts ./apps/api/index.ts
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/bun.lock* ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/apps/api ./apps/api
+COPY --from=builder /app/turbo.json ./
 
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 RUN chown -R appuser:appuser /app
