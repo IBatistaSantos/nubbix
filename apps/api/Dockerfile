@@ -1,50 +1,40 @@
 FROM oven/bun:1.3.4-slim AS deps
 WORKDIR /app
 
-# Copy all workspace files needed for dependency resolution
 COPY package.json bun.lock* ./
 COPY packages ./packages
 COPY apps/api/package.json ./apps/api/
 COPY turbo.json ./
 
-# Install dependencies (this layer will be cached if package files don't change)
-# Note: Using --frozen-lockfile can fail if lockfile is out of sync, so we allow updates in deps stage
 RUN bun install
 
 FROM oven/bun:1.3.4-slim AS builder
 WORKDIR /app
 
-# Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package.json ./
 COPY --from=deps /app/bun.lock* ./
 
-# Copy source code and config files
 COPY packages ./packages
 COPY apps/api ./apps/api
 COPY turbo.json ./
 
-# Build the application
 RUN bun run apps/api/build || echo "No build script, skipping"
 
 FROM oven/bun:1.3.4-slim AS production
 WORKDIR /app
 
-# Copy package files, lockfile and node_modules from deps stage
 COPY --from=deps /app/package.json ./
 COPY --from=deps /app/bun.lock* ./
 COPY --from=deps /app/node_modules ./node_modules
 
-# Copy all packages and workspace config
 COPY --from=deps /app/packages ./packages
 COPY --from=deps /app/turbo.json ./
 
-# Copy built application and necessary files
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/apps/api ./apps/api
 COPY --from=builder /app/turbo.json ./
 
-# Create non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 RUN chown -R appuser:appuser /app
 USER appuser
