@@ -5,6 +5,7 @@ COPY package.json bun.lock* ./
 COPY packages ./packages
 COPY apps/api ./apps/api
 COPY turbo.json ./
+COPY drizzle.config.json ./
 
 RUN bun install
 RUN bun run apps/api/build || echo "No build script, skipping"
