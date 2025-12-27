@@ -30,16 +30,14 @@ RUN bun run apps/api/build || echo "No build script, skipping"
 FROM oven/bun:1.3.4-slim AS production
 WORKDIR /app
 
-# Copy package files and lockfile
+# Copy package files, lockfile and node_modules from deps stage
 COPY --from=deps /app/package.json ./
 COPY --from=deps /app/bun.lock* ./
+COPY --from=deps /app/node_modules ./node_modules
 
-# Copy all packages and workspace config needed for production install
+# Copy all packages and workspace config
 COPY --from=deps /app/packages ./packages
 COPY --from=deps /app/turbo.json ./
-
-# Install dependencies (production mode by default in NODE_ENV=production)
-RUN bun install
 
 # Copy built application and necessary files
 COPY --from=builder /app/packages ./packages
