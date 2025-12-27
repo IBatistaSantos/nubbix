@@ -15,11 +15,7 @@
     "isolatedModules": true,
     "incremental": true,
     "jsx": "preserve",
-    "paths": {
-      "@nubbix/ui/*": ["../ui/src/*"],
-      "@nubbix/domain/*": ["../domain/src/*"]
-    }
+    "paths": {}
   },
   "exclude": ["node_modules", "dist", ".next", "build"]
 }
-

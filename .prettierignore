@@ -1,0 +1,32 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build outputs
+.next
+out
+dist
+build
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# Lock files
+bun.lock
+package-lock.json
+yarn.lock
+
+# Coverage
+coverage
+
+# Turbo
+.turbo
+
+# Git
+.git
+
+# Vercel
+.vercel
+

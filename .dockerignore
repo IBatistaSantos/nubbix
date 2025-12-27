@@ -8,6 +8,8 @@ node_modules
 
 # Testing
 coverage
+**/__tests__/**
+**/tests/**
 
 # Next.js
 .next/
@@ -41,8 +43,21 @@ yarn-error.log*
 # Bun
 bun.lockb
 
-# Prettier
-.prettier-cache
+# Git
+.git
+.gitignore
 
-# Husky (v9+ não precisa mais desta pasta)
+# Documentação
+README.md
+*.md
+
+# Arquivos de desenvolvimento
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# CI/CD
+.github
 

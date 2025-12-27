@@ -37,7 +37,7 @@ class TestUseCase extends BaseUseCase<TestInput, TestOutput> {
 class FailingValidatorUseCase extends BaseUseCase<TestInput, TestOutput> {
   protected getInputValidator(): InputValidator<TestInput> {
     return {
-      validate(input: unknown): TestInput {
+      validate(_input: unknown): TestInput {
         throw new ValidationError("Validation failed", [
           { path: "name", message: "Name is required" },
         ]);
@@ -45,7 +45,7 @@ class FailingValidatorUseCase extends BaseUseCase<TestInput, TestOutput> {
     };
   }
 
-  protected async execute(input: TestInput): Promise<TestOutput> {
+  protected async execute(_input: TestInput): Promise<TestOutput> {
     return { message: "Success" };
   }
 }
@@ -79,9 +79,7 @@ describe("BaseUseCase", () => {
     it("should throw ValidationError when validator throws", async () => {
       const useCase = new FailingValidatorUseCase();
 
-      await expect(useCase.run({ name: "John", age: 30 })).rejects.toThrow(
-        ValidationError
-      );
+      await expect(useCase.run({ name: "John", age: 30 })).rejects.toThrow(ValidationError);
     });
 
     it("should handle missing required fields", async () => {
@@ -93,10 +91,7 @@ describe("BaseUseCase", () => {
     it("should handle wrong types", async () => {
       const useCase = new TestUseCase();
 
-      await expect(
-        useCase.run({ name: "John", age: "30" } as any)
-      ).rejects.toThrow();
+      await expect(useCase.run({ name: "John", age: "30" } as any)).rejects.toThrow();
     });
   });
 });
-

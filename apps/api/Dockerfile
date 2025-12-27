@@ -1,22 +1,47 @@
+FROM oven/bun:1.3.4-slim AS deps
+WORKDIR /app
+
+# Copy dependency files first for better layer caching
+COPY package.json bun.lock* ./
+COPY packages/*/package.json ./packages/*/
+COPY apps/api/package.json ./apps/api/
+
+# Install dependencies (this layer will be cached if package files don't change)
+RUN bun install --frozen-lockfile --production=false
+
 FROM oven/bun:1.3.4-slim AS builder
 WORKDIR /app
 
-COPY package.json bun.lock* ./
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/package.json ./
+COPY --from=deps /app/bun.lock* ./
+
+# Copy source code and config files
 COPY packages ./packages
 COPY apps/api ./apps/api
 COPY turbo.json ./
 
-RUN bun install
+# Build the application
+RUN bun run apps/api/build || echo "No build script, skipping"
 
 FROM oven/bun:1.3.4-slim AS production
 WORKDIR /app
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/bun.lock* ./
+# Copy only production dependencies
+COPY --from=deps /app/package.json ./
+COPY --from=deps /app/bun.lock* ./
+RUN bun install --frozen-lockfile --production
+
+# Copy built application and necessary files
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/apps/api ./apps/api
 COPY --from=builder /app/turbo.json ./
+
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN chown -R appuser:appuser /app
+USER appuser
 
 EXPOSE 3001
 

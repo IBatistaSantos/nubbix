@@ -21,7 +21,8 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@nubbix/ui/*": ["../../packages/ui/src/*"]
+      "@nubbix/ui/*": ["../../packages/ui/src/*"],
+      "@nubbix/domain/*": ["../../packages/domain/src/*"]
     }
   },
   "include": [

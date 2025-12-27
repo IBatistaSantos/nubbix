@@ -204,7 +204,7 @@ export class User extends BaseEntity {
   }
 
   toOutput() {
-    const { deletedAt, ...json } = super.toJSON();
+    const { deletedAt: _deletedAt, ...json } = super.toJSON();
     return {
       ...json,
       name: this._name,
@@ -228,4 +228,3 @@ export class User extends BaseEntity {
     };
   }
 }
-

@@ -67,11 +67,11 @@ export abstract class BaseEntity {
     };
   }
 
-  static asFaker(overrides?: Partial<any>): BaseEntity {
+  static asFaker(_overrides?: Partial<any>): BaseEntity {
     throw new Error(`asFaker must be implemented by ${this.name}`);
   }
 
-  protected static generateBaseFakerProps(): BaseProps {
+  public static generateBaseFakerProps(): BaseProps {
     const now = new Date();
     return {
       id: uuidv7(),
@@ -82,4 +82,3 @@ export abstract class BaseEntity {
     };
   }
 }
-

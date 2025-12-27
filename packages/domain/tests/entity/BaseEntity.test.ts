@@ -1,8 +1,7 @@
-import { describe, it, expect, beforeEach } from "bun:test";
+import { describe, it, expect } from "bun:test";
 import { BaseEntity, BaseProps } from "../../src/entity/BaseEntity";
 import { ID } from "../../src/vo/ID";
-import { Status } from "../../src/vo/Status";
-import { faker } from "@faker-js/faker";
+import { Status, StatusValue } from "../../src/vo/Status";
 
 class TestEntity extends BaseEntity {
   constructor(props: BaseProps) {
@@ -63,9 +62,7 @@ describe("BaseEntity", () => {
 
       expect(entity.status.isInactive()).toBe(true);
       expect(entity.deletedAt).toBeInstanceOf(Date);
-      expect(entity.updatedAt.getTime()).toBeGreaterThan(
-        initialUpdatedAt.getTime()
-      );
+      expect(entity.updatedAt.getTime()).toBeGreaterThan(initialUpdatedAt.getTime());
     });
   });
 
@@ -81,9 +78,7 @@ describe("BaseEntity", () => {
 
       expect(entity.status.isActive()).toBe(true);
       expect(entity.deletedAt).toBeNull();
-      expect(entity.updatedAt.getTime()).toBeGreaterThan(
-        initialUpdatedAt.getTime()
-      );
+      expect(entity.updatedAt.getTime()).toBeGreaterThan(initialUpdatedAt.getTime());
     });
   });
 
@@ -105,14 +100,14 @@ describe("BaseEntity", () => {
         createdAt: now,
         updatedAt: now,
         deletedAt: null,
-        status: "active",
+        status: StatusValue.ACTIVE,
       });
     });
   });
 
   describe("generateBaseFakerProps", () => {
     it("should generate base faker props", () => {
-      const props = BaseEntity.generateBaseFakerProps.call(TestEntity);
+      const props = TestEntity.generateBaseFakerProps();
 
       expect(props.id).toBeDefined();
       expect(props.createdAt).toBeInstanceOf(Date);
@@ -141,4 +136,3 @@ describe("BaseEntity", () => {
     });
   });
 });
-
