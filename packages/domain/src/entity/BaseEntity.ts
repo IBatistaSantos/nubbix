@@ -1,6 +1,6 @@
 import { ID } from "../vo/ID";
 import { Status } from "../vo/Status";
-import { uuidv7 } from "uuidv7";
+import { v7 as uuidv7 } from "uuid";
 
 export interface BaseProps extends Partial<{
   id: string;

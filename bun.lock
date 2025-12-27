@@ -43,7 +43,7 @@
       "name": "@nubbix/domain",
       "version": "0.0.0",
       "dependencies": {
-        "uuidv7": "^0.1.0",
+        "uuid": "^11.0.3",
         "zod": "^3.23.8",
       },
       "devDependencies": {
@@ -922,7 +922,7 @@
 
     "uri-js": ["uri-js@4.4.1", "", { "dependencies": { "punycode": "^2.1.0" } }, "sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg=="],
 
-    "uuidv7": ["uuidv7@0.1.8", "", { "bin": { "uuidv7": "alt/cli.cjs" } }, "sha512-J91aXVtx1HOphrsu/h6X5XIV1DIqvnl9PH+lejG6aywT9qcFrXNDBr2nE1C5+cUaSm11c4CR7fSgoLx7yP9CgA=="],
+    "uuid": ["uuid@11.1.0", "", { "bin": { "uuid": "dist/esm/bin/uuid" } }, "sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A=="],
 
     "which": ["which@2.0.2", "", { "dependencies": { "isexe": "^2.0.0" }, "bin": { "node-which": "./bin/node-which" } }, "sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA=="],
 
