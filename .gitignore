@@ -3,6 +3,9 @@ node_modules
 .pnp
 .pnp.js
 
+# TypeScript
+*.tsbuildinfo
+
 # Testing
 coverage
 
@@ -37,4 +40,5 @@ yarn-error.log*
 
 # Bun
 bun.lockb
+
 
