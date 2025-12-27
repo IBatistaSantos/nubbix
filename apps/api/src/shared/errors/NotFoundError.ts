@@ -7,4 +7,3 @@ export class NotFoundError extends AppError {
     Object.setPrototypeOf(this, NotFoundError.prototype);
   }
 }
-

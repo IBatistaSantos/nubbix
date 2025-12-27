@@ -8,4 +8,3 @@ export function generateRandomPassword(): string {
   }
   return password;
 }
-

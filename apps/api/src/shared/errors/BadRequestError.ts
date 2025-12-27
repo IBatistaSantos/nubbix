@@ -7,4 +7,3 @@ export class BadRequestError extends AppError {
     Object.setPrototypeOf(this, BadRequestError.prototype);
   }
 }
-
