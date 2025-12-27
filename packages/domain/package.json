@@ -1,0 +1,31 @@
+{
+  "name": "@nubbix/domain",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./entity": "./src/entity/BaseEntity.ts",
+    "./usecase": "./src/usecase/BaseUseCase.ts",
+    "./repository": "./src/repository/Repository.ts",
+    "./vo": "./src/vo/index.ts",
+    "./errors": "./src/errors/ValidationError.ts",
+    "./utils": "./src/utils/createZodValidator.ts",
+    "./*": "./src/*"
+  },
+  "scripts": {
+    "lint": "echo 'lint'",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "uuidv7": "^0.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.3.0",
+    "@types/bun": "^1.3.5",
+    "typescript": "^5"
+  }
+}
+
