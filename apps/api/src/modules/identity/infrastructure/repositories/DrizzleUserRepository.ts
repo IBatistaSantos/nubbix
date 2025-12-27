@@ -1,11 +1,10 @@
 import { ID, Email, Status, StatusValue } from "@nubbix/domain";
 import { eq, and, isNull } from "drizzle-orm";
-import { User, UserRepository, Role } from "../../domain";
+import { User, UserRepository } from "../../domain";
 import { users } from "../../../../shared/infrastructure/db";
 import { BaseDrizzleRepository } from "../../../../shared/infrastructure/repositories/BaseDrizzleRepository";
 
 type UserSchema = typeof users.$inferSelect;
-type UserInsert = typeof users.$inferInsert;
 
 export class DrizzleUserRepository
   extends BaseDrizzleRepository<User, UserSchema>
