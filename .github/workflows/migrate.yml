@@ -30,7 +30,14 @@ jobs:
         run: |
           if [ -z "${{ secrets.DATABASE_URL }}" ]; then
             echo "❌ ERROR: DATABASE_URL secret is not configured"
-            echo "Please configure it in: Settings → Secrets and variables → Actions"
+            echo ""
+            echo "Since this workflow uses 'environment: production', you need to configure the secret in:"
+            echo "Settings → Environments → production → Secrets"
+            echo ""
+            echo "OR configure it as a repository secret in:"
+            echo "Settings → Secrets and variables → Actions"
+            echo ""
+            echo "If you're using environments, the environment secret takes precedence."
             exit 1
           else
             echo "✅ DATABASE_URL secret is configured"
