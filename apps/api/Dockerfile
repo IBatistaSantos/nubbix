@@ -1,10 +1,11 @@
 FROM oven/bun:1.3.4-slim AS deps
 WORKDIR /app
 
-# Copy dependency files first for better layer caching
+# Copy all workspace files needed for dependency resolution
 COPY package.json bun.lock* ./
-COPY packages/*/package.json ./packages/*/
+COPY packages ./packages
 COPY apps/api/package.json ./apps/api/
+COPY turbo.json ./
 
 # Install dependencies (this layer will be cached if package files don't change)
 RUN bun install --frozen-lockfile
