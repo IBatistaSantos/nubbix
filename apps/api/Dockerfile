@@ -27,10 +27,10 @@ WORKDIR /app
 COPY --from=deps /app/package.json ./
 COPY --from=deps /app/bun.lock* ./
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+COPY --from=deps /app/turbo.json ./
 
-COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/apps/api ./apps/api
-COPY --from=builder /app/turbo.json ./
 
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 RUN chown -R appuser:appuser /app
