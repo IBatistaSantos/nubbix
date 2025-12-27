@@ -30,10 +30,15 @@ RUN bun run apps/api/build || echo "No build script, skipping"
 FROM oven/bun:1.3.4-slim AS production
 WORKDIR /app
 
-# Copy only production dependencies
-# Use lockfile from deps stage (which may have been updated)
+# Copy package files and lockfile
 COPY --from=deps /app/package.json ./
 COPY --from=deps /app/bun.lock* ./
+
+# Copy all packages and workspace config needed for production install
+COPY --from=deps /app/packages ./packages
+COPY --from=deps /app/turbo.json ./
+
+# Install only production dependencies
 RUN bun install --production
 
 # Copy built application and necessary files
