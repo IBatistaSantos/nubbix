@@ -7,7 +7,7 @@ COPY packages/*/package.json ./packages/*/
 COPY apps/api/package.json ./apps/api/
 
 # Install dependencies (this layer will be cached if package files don't change)
-RUN bun install --frozen-lockfile --production=false
+RUN bun install --frozen-lockfile
 
 FROM oven/bun:1.3.4-slim AS builder
 WORKDIR /app
