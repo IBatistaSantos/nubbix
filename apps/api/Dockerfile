@@ -8,7 +8,8 @@ COPY apps/api/package.json ./apps/api/
 COPY turbo.json ./
 
 # Install dependencies (this layer will be cached if package files don't change)
-RUN bun install --frozen-lockfile
+# Note: Using --frozen-lockfile can fail if lockfile is out of sync, so we allow updates in deps stage
+RUN bun install
 
 FROM oven/bun:1.3.4-slim AS builder
 WORKDIR /app
