@@ -16,7 +16,9 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:generate": "cd apps/api && bunx drizzle-kit generate",
+    "db:migrate": "cd apps/api && bunx drizzle-kit migrate"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
