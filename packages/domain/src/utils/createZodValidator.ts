@@ -2,9 +2,7 @@ import { z } from "zod";
 import { InputValidator } from "../usecase/InputValidator";
 import { ValidationError } from "../errors/ValidationError";
 
-export function createZodValidator<TInput>(
-  schema: z.ZodSchema<TInput>
-): InputValidator<TInput> {
+export function createZodValidator<TInput>(schema: z.ZodSchema<TInput>): InputValidator<TInput> {
   return {
     validate(input: unknown): TInput {
       try {
@@ -26,4 +24,3 @@ export function createZodValidator<TInput>(
     },
   };
 }
-

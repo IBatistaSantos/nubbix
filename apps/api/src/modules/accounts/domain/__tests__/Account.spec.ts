@@ -198,9 +198,7 @@ describe("Account", () => {
       account.update({ name: newName });
 
       expect(account.name).toBe(newName);
-      expect(account.updatedAt.getTime()).toBeGreaterThan(
-        initialUpdatedAt.getTime()
-      );
+      expect(account.updatedAt.getTime()).toBeGreaterThan(initialUpdatedAt.getTime());
     });
 
     it("should update account description", () => {
@@ -366,9 +364,7 @@ describe("Account", () => {
         expect(error).toBeInstanceOf(ValidationError);
         expect((error as ValidationError).details).toHaveLength(1);
         expect((error as ValidationError).details[0].path).toBe("name");
-        expect((error as ValidationError).details[0].message).toBe(
-          "Name cannot be empty"
-        );
+        expect((error as ValidationError).details[0].message).toBe("Name cannot be empty");
       }
     });
 
@@ -389,9 +385,7 @@ describe("Account", () => {
       } catch (error) {
         expect(error).toBeInstanceOf(ValidationError);
         expect((error as ValidationError).details[0].path).toBe("name");
-        expect((error as ValidationError).details[0].message).toBe(
-          "Name cannot be empty"
-        );
+        expect((error as ValidationError).details[0].message).toBe("Name cannot be empty");
       }
     });
 
@@ -455,9 +449,7 @@ describe("Account", () => {
       } catch (error) {
         expect(error).toBeInstanceOf(ValidationError);
         expect((error as ValidationError).details[0].path).toBe("accountType");
-        expect((error as ValidationError).details[0].message).toBe(
-          "AccountType is required"
-        );
+        expect((error as ValidationError).details[0].message).toBe("AccountType is required");
       }
     });
 
@@ -562,4 +554,3 @@ describe("Account", () => {
     });
   });
 });
-

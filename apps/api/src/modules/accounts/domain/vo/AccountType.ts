@@ -3,8 +3,7 @@ export const AccountTypeValue = {
   RECURRING: "RECURRING",
 } as const;
 
-export type AccountTypeValue =
-  typeof AccountTypeValue[keyof typeof AccountTypeValue];
+export type AccountTypeValue = (typeof AccountTypeValue)[keyof typeof AccountTypeValue];
 
 export class AccountType {
   private _value: AccountTypeValue;
@@ -41,4 +40,3 @@ export class AccountType {
     return this._value === AccountTypeValue.RECURRING;
   }
 }
-

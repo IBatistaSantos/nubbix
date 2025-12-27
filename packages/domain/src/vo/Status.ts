@@ -34,4 +34,3 @@ export class Status {
     return this._value === other._value;
   }
 }
-

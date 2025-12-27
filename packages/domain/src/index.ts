@@ -7,4 +7,3 @@ export { Status, StatusValue } from "./vo/Status";
 export { Email } from "./vo/Email";
 export { ValidationError, type ValidationErrorDetail } from "./errors/ValidationError";
 export { createZodValidator } from "./utils/createZodValidator";
-

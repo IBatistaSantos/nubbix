@@ -24,9 +24,7 @@ describe("AccountType", () => {
 
   describe("fromValue", () => {
     it("should create account type from TRANSACTIONAL value", () => {
-      const accountType = AccountType.fromValue(
-        AccountTypeValue.TRANSACTIONAL
-      );
+      const accountType = AccountType.fromValue(AccountTypeValue.TRANSACTIONAL);
 
       expect(accountType.value).toBe(AccountTypeValue.TRANSACTIONAL);
       expect(accountType.isTransactional()).toBe(true);
@@ -84,4 +82,3 @@ describe("AccountType", () => {
     });
   });
 });
-

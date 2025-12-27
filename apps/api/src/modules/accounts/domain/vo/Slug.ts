@@ -22,16 +22,12 @@ export class Slug {
 
     // Permite apenas letras, números, hífen e underscore
     if (!/^[a-zA-Z0-9_-]+$/.test(value)) {
-      throw new ValidationError(
-        "Slug can only contain letters, numbers, hyphens and underscores",
-        [
-          {
-            path: "slug",
-            message:
-              "Slug can only contain letters, numbers, hyphens and underscores",
-          },
-        ]
-      );
+      throw new ValidationError("Slug can only contain letters, numbers, hyphens and underscores", [
+        {
+          path: "slug",
+          message: "Slug can only contain letters, numbers, hyphens and underscores",
+        },
+      ]);
     }
 
     return new Slug(value);
@@ -49,4 +45,3 @@ export class Slug {
     return this._value;
   }
 }
-

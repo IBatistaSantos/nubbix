@@ -10,4 +10,3 @@ export abstract class BaseUseCase<TInput, TOutput> {
     return this.execute(validatedInput);
   }
 }
-

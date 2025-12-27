@@ -4,7 +4,7 @@ export const RoleValue = {
   SUPER_ADMIN: "SUPER_ADMIN",
 } as const;
 
-export type RoleValue = typeof RoleValue[keyof typeof RoleValue];
+export type RoleValue = (typeof RoleValue)[keyof typeof RoleValue];
 
 export class Role {
   private _value: RoleValue;
@@ -49,4 +49,3 @@ export class Role {
     return this._value === RoleValue.SUPER_ADMIN;
   }
 }
-

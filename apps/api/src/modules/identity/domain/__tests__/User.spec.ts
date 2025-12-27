@@ -141,9 +141,7 @@ describe("User", () => {
       user.update({ name: newName });
 
       expect(user.name).toBe(newName);
-      expect(user.updatedAt.getTime()).toBeGreaterThan(
-        initialUpdatedAt.getTime()
-      );
+      expect(user.updatedAt.getTime()).toBeGreaterThan(initialUpdatedAt.getTime());
     });
 
     it("should update user email", () => {
@@ -213,9 +211,7 @@ describe("User", () => {
 
       expect(user.resetPasswordToken).toBe(token);
       expect(user.resetPasswordTokenExpiresAt).toBeInstanceOf(Date);
-      expect(
-        user.resetPasswordTokenExpiresAt!.getTime()
-      ).toBeGreaterThan(Date.now());
+      expect(user.resetPasswordTokenExpiresAt!.getTime()).toBeGreaterThan(Date.now());
     });
   });
 
@@ -277,9 +273,7 @@ describe("User", () => {
 
       const token = faker.string.alphanumeric(32);
 
-      expect(() => user.validateResetToken(token)).toThrow(
-        InvalidResetTokenException
-      );
+      expect(() => user.validateResetToken(token)).toThrow(InvalidResetTokenException);
     });
 
     it("should throw InvalidResetTokenException when token does not match", () => {
@@ -295,9 +289,7 @@ describe("User", () => {
       const wrongToken = faker.string.alphanumeric(32);
       user.resetPassword(token, 3600000);
 
-      expect(() => user.validateResetToken(wrongToken)).toThrow(
-        InvalidResetTokenException
-      );
+      expect(() => user.validateResetToken(wrongToken)).toThrow(InvalidResetTokenException);
     });
 
     it("should throw InvalidResetTokenException when token is expired", () => {
@@ -312,9 +304,7 @@ describe("User", () => {
       const token = faker.string.alphanumeric(32);
       user.resetPassword(token, -1000); // Already expired
 
-      expect(() => user.validateResetToken(token)).toThrow(
-        InvalidResetTokenException
-      );
+      expect(() => user.validateResetToken(token)).toThrow(InvalidResetTokenException);
     });
 
     it("should not throw when token is valid", () => {
@@ -355,9 +345,7 @@ describe("User", () => {
       expect(user.password).toBe(newPassword);
       expect(user.resetPasswordToken).toBeNull();
       expect(user.resetPasswordTokenExpiresAt).toBeNull();
-      expect(user.updatedAt.getTime()).toBeGreaterThan(
-        initialUpdatedAt.getTime()
-      );
+      expect(user.updatedAt.getTime()).toBeGreaterThan(initialUpdatedAt.getTime());
     });
   });
 
@@ -390,9 +378,7 @@ describe("User", () => {
         expect(error).toBeInstanceOf(ValidationError);
         expect((error as ValidationError).details).toHaveLength(1);
         expect((error as ValidationError).details[0].path).toBe("name");
-        expect((error as ValidationError).details[0].message).toBe(
-          "Name cannot be empty"
-        );
+        expect((error as ValidationError).details[0].message).toBe("Name cannot be empty");
       }
     });
 
@@ -411,9 +397,7 @@ describe("User", () => {
       } catch (error) {
         expect(error).toBeInstanceOf(ValidationError);
         expect((error as ValidationError).details[0].path).toBe("name");
-        expect((error as ValidationError).details[0].message).toBe(
-          "Name cannot be empty"
-        );
+        expect((error as ValidationError).details[0].message).toBe("Name cannot be empty");
       }
     });
 
@@ -467,9 +451,7 @@ describe("User", () => {
       } catch (error) {
         expect(error).toBeInstanceOf(ValidationError);
         expect((error as ValidationError).details[0].path).toBe("password");
-        expect((error as ValidationError).details[0].message).toBe(
-          "Password cannot be empty"
-        );
+        expect((error as ValidationError).details[0].message).toBe("Password cannot be empty");
       }
     });
 
@@ -521,9 +503,7 @@ describe("User", () => {
       } catch (error) {
         expect(error).toBeInstanceOf(ValidationError);
         expect((error as ValidationError).details[0].path).toBe("accountId");
-        expect((error as ValidationError).details[0].message).toBe(
-          "AccountId is required"
-        );
+        expect((error as ValidationError).details[0].message).toBe("AccountId is required");
       }
     });
 
@@ -545,9 +525,7 @@ describe("User", () => {
       } catch (error) {
         expect(error).toBeInstanceOf(ValidationError);
         expect((error as ValidationError).details[0].path).toBe("role");
-        expect((error as ValidationError).details[0].message).toBe(
-          "Role is required"
-        );
+        expect((error as ValidationError).details[0].message).toBe("Role is required");
       }
     });
 
@@ -678,4 +656,3 @@ describe("User", () => {
     });
   });
 });
-

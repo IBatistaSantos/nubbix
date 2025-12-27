@@ -9,7 +9,7 @@ export class Email {
 
   static create(value: string): Email {
     const trimmedValue = value.trim();
-    
+
     if (!trimmedValue || trimmedValue.length === 0) {
       throw new ValidationError("Email cannot be empty", [
         { path: "email", message: "Email cannot be empty" },
@@ -39,4 +39,3 @@ export class Email {
     return this._value;
   }
 }
-

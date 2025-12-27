@@ -7,4 +7,3 @@ export interface Repository<T extends BaseEntity> {
   delete(id: ID): Promise<void>;
   exists(id: ID): Promise<boolean>;
 }
-

@@ -4,4 +4,3 @@ export class InvalidResetTokenException extends Error {
     this.name = "InvalidResetTokenException";
   }
 }
-
