@@ -1,4 +1,4 @@
-import { beforeAll, afterEach, afterAll } from "bun:test";
+import { beforeAll, beforeEach, afterEach, afterAll } from "bun:test";
 import {
   startTestDatabase,
   stopTestDatabase,
@@ -24,6 +24,12 @@ export function setupIntegrationTests(): TestContext | null {
       canRunTests = false;
     }
   }, 30000);
+
+  beforeEach(async () => {
+    if (canRunTests) {
+      await cleanupTestDatabase();
+    }
+  });
 
   afterEach(async () => {
     if (canRunTests) {

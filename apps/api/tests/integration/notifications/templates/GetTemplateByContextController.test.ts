@@ -151,6 +151,7 @@ describe("GetTemplateByContextController Integration", () => {
 
   it("should return not found error when no template found", async () => {
     const getTester = createGetTemplateByContextTester();
+    const accountId = faker.string.uuid();
     const context = faker.helpers.arrayElement([
       "account.welcome",
       "participant.registration",
@@ -165,7 +166,7 @@ describe("GetTemplateByContextController Integration", () => {
       getTester.run({
         context,
         language,
-        accountId: faker.string.uuid(),
+        accountId,
       })
     ).rejects.toThrow();
   });
