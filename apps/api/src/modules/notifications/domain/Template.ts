@@ -158,6 +158,33 @@ export class Template extends BaseEntity {
     this._updatedAt = new Date();
   }
 
+  render(variables: Record<string, any>): { subject: string; body: string } {
+    const getNestedValue = (obj: any, path: string): string => {
+      const keys = path.split(".");
+      let value = obj;
+      for (const key of keys) {
+        if (value === null || value === undefined) {
+          return "";
+        }
+        value = value[key];
+      }
+      return value != null ? String(value) : "";
+    };
+
+    const replaceVariables = (text: string): string => {
+      return text.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
+        const trimmedPath = path.trim();
+        const value = getNestedValue(variables, trimmedPath);
+        return value;
+      });
+    };
+
+    return {
+      subject: replaceVariables(this._subject),
+      body: replaceVariables(this._body),
+    };
+  }
+
   static asFaker(overrides?: Partial<TemplateProps>): Template {
     const baseProps = this.generateBaseFakerProps();
     const channel = Channel.email();

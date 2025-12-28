@@ -476,4 +476,144 @@ describe("Template", () => {
       expect(template.context.isForgotPassword()).toBe(true);
     });
   });
+
+  describe("render", () => {
+    it("should render simple variables", () => {
+      const template = new Template({
+        channel: Channel.email(),
+        subject: "Hello {{name}}",
+        body: "Welcome {{name}}!",
+        context: TemplateContext.accountWelcome(),
+        language: Language.ptBR(),
+        isDefault: true,
+      });
+
+      const rendered = template.render({ name: "John" });
+
+      expect(rendered.subject).toBe("Hello John");
+      expect(rendered.body).toBe("Welcome John!");
+    });
+
+    it("should render nested object variables", () => {
+      const template = new Template({
+        channel: Channel.email(),
+        subject: "Ticket: {{ticket.name}}",
+        body: "Your ticket {{ticket.name}} has status {{ticket.status}}",
+        context: TemplateContext.accountWelcome(),
+        language: Language.ptBR(),
+        isDefault: true,
+      });
+
+      const rendered = template.render({
+        ticket: {
+          name: "TICKET-123",
+          status: "open",
+        },
+      });
+
+      expect(rendered.subject).toBe("Ticket: TICKET-123");
+      expect(rendered.body).toBe("Your ticket TICKET-123 has status open");
+    });
+
+    it("should render multiple variables", () => {
+      const template = new Template({
+        channel: Channel.email(),
+        subject: "{{greeting}} {{user.name}}",
+        body: "Hello {{user.name}}, your code is {{code}}",
+        context: TemplateContext.accountWelcome(),
+        language: Language.ptBR(),
+        isDefault: true,
+      });
+
+      const rendered = template.render({
+        greeting: "Hi",
+        user: {
+          name: "Alice",
+        },
+        code: "ABC123",
+      });
+
+      expect(rendered.subject).toBe("Hi Alice");
+      expect(rendered.body).toBe("Hello Alice, your code is ABC123");
+    });
+
+    it("should return empty string for missing variables", () => {
+      const template = new Template({
+        channel: Channel.email(),
+        subject: "Hello {{name}}",
+        body: "Code: {{code}}",
+        context: TemplateContext.accountWelcome(),
+        language: Language.ptBR(),
+        isDefault: true,
+      });
+
+      const rendered = template.render({});
+
+      expect(rendered.subject).toBe("Hello ");
+      expect(rendered.body).toBe("Code: ");
+    });
+
+    it("should handle deeply nested variables", () => {
+      const template = new Template({
+        channel: Channel.email(),
+        subject: "{{user.profile.firstName}}",
+        body: "Email: {{user.contact.email}}",
+        context: TemplateContext.accountWelcome(),
+        language: Language.ptBR(),
+        isDefault: true,
+      });
+
+      const rendered = template.render({
+        user: {
+          profile: {
+            firstName: "Bob",
+          },
+          contact: {
+            email: "bob@example.com",
+          },
+        },
+      });
+
+      expect(rendered.subject).toBe("Bob");
+      expect(rendered.body).toBe("Email: bob@example.com");
+    });
+
+    it("should convert non-string values to string", () => {
+      const template = new Template({
+        channel: Channel.email(),
+        subject: "Count: {{count}}",
+        body: "Active: {{active}}",
+        context: TemplateContext.accountWelcome(),
+        language: Language.ptBR(),
+        isDefault: true,
+      });
+
+      const rendered = template.render({
+        count: 42,
+        active: true,
+      });
+
+      expect(rendered.subject).toBe("Count: 42");
+      expect(rendered.body).toBe("Active: true");
+    });
+
+    it("should handle null and undefined values", () => {
+      const template = new Template({
+        channel: Channel.email(),
+        subject: "Value: {{value}}",
+        body: "Data: {{data}}",
+        context: TemplateContext.accountWelcome(),
+        language: Language.ptBR(),
+        isDefault: true,
+      });
+
+      const rendered = template.render({
+        value: null,
+        data: undefined,
+      });
+
+      expect(rendered.subject).toBe("Value: ");
+      expect(rendered.body).toBe("Data: ");
+    });
+  });
 });
