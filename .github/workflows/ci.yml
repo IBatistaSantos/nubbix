@@ -122,6 +122,7 @@ jobs:
       - name: Run integration tests
         working-directory: apps/api
         env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
           DATABASE_TEST_HOST: localhost
           DATABASE_TEST_PORT: 5432
           DATABASE_TEST_USER: postgres
