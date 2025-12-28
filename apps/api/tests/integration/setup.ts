@@ -31,12 +31,6 @@ export function setupIntegrationTests(): TestContext | null {
     }
   });
 
-  afterEach(async () => {
-    if (canRunTests) {
-      await cleanupTestDatabase();
-    }
-  });
-
   afterAll(async () => {
     if (canRunTests) {
       await stopTestDatabase();
