@@ -1,6 +1,7 @@
 export const ProviderValue = {
   TWILIO: "twilio",
   SENDGRID: "sendgrid",
+  RESEND: "resend",
   CUSTOM: "custom",
 } as const;
 
@@ -25,6 +26,10 @@ export class Provider {
     return new Provider(ProviderValue.SENDGRID);
   }
 
+  static resend() {
+    return new Provider(ProviderValue.RESEND);
+  }
+
   static custom() {
     return new Provider(ProviderValue.CUSTOM);
   }
@@ -43,6 +48,10 @@ export class Provider {
 
   isSendgrid() {
     return this._value === ProviderValue.SENDGRID;
+  }
+
+  isResend() {
+    return this._value === ProviderValue.RESEND;
   }
 
   isCustom() {
