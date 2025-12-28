@@ -99,6 +99,38 @@ export class DrizzleTemplateRepository
     return this.toDomain(result[0]);
   }
 
+  async findByContextLanguageAndChannel(
+    context: TemplateContext,
+    language: Language,
+    channel: Channel,
+    accountId?: string | null
+  ): Promise<Template | null> {
+    const conditions = [
+      eq(templates.context, context.value as any),
+      eq(templates.language, language.value as any),
+      eq(templates.channel, channel.value as any),
+      isNull(templates.deletedAt),
+    ];
+
+    if (accountId !== undefined && accountId !== null) {
+      conditions.push(eq(templates.accountId, accountId));
+    } else {
+      conditions.push(isNull(templates.accountId));
+    }
+
+    const result = await this.db
+      .select()
+      .from(templates)
+      .where(and(...conditions))
+      .limit(1);
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    return this.toDomain(result[0]);
+  }
+
   async findDefaultByContextAndLanguage(
     context: TemplateContext,
     language: Language
@@ -110,6 +142,33 @@ export class DrizzleTemplateRepository
         and(
           eq(templates.context, context.value as any),
           eq(templates.language, language.value as any),
+          isNull(templates.accountId),
+          eq(templates.isDefault, true),
+          isNull(templates.deletedAt)
+        )
+      )
+      .limit(1);
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    return this.toDomain(result[0]);
+  }
+
+  async findDefaultByContextLanguageAndChannel(
+    context: TemplateContext,
+    language: Language,
+    channel: Channel
+  ): Promise<Template | null> {
+    const result = await this.db
+      .select()
+      .from(templates)
+      .where(
+        and(
+          eq(templates.context, context.value as any),
+          eq(templates.language, language.value as any),
+          eq(templates.channel, channel.value as any),
           isNull(templates.accountId),
           eq(templates.isDefault, true),
           isNull(templates.deletedAt)

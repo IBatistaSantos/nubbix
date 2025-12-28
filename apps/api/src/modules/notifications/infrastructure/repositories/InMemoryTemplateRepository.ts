@@ -1,6 +1,6 @@
 import { ID } from "@nubbix/domain";
 import { Template, TemplateRepository } from "../../domain";
-import { TemplateContext, Language } from "../../domain/vo";
+import { TemplateContext, Language, Channel } from "../../domain/vo";
 
 export class InMemoryTemplateRepository implements TemplateRepository {
   private templates: Map<string, Template> = new Map();
@@ -49,6 +49,26 @@ export class InMemoryTemplateRepository implements TemplateRepository {
     return null;
   }
 
+  async findByContextLanguageAndChannel(
+    context: TemplateContext,
+    language: Language,
+    channel: Channel,
+    accountId?: string | null
+  ): Promise<Template | null> {
+    for (const template of this.templates.values()) {
+      if (
+        template.deletedAt === null &&
+        template.context.value === context.value &&
+        template.language.value === language.value &&
+        template.channel.value === channel.value &&
+        (accountId !== undefined ? template.accountId === accountId : template.accountId === null)
+      ) {
+        return template;
+      }
+    }
+    return null;
+  }
+
   async findDefaultByContextAndLanguage(
     context: TemplateContext,
     language: Language
@@ -58,6 +78,26 @@ export class InMemoryTemplateRepository implements TemplateRepository {
         template.deletedAt === null &&
         template.context.value === context.value &&
         template.language.value === language.value &&
+        template.accountId === null &&
+        template.isDefault
+      ) {
+        return template;
+      }
+    }
+    return null;
+  }
+
+  async findDefaultByContextLanguageAndChannel(
+    context: TemplateContext,
+    language: Language,
+    channel: Channel
+  ): Promise<Template | null> {
+    for (const template of this.templates.values()) {
+      if (
+        template.deletedAt === null &&
+        template.context.value === context.value &&
+        template.language.value === language.value &&
+        template.channel.value === channel.value &&
         template.accountId === null &&
         template.isDefault
       ) {
