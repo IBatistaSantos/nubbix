@@ -1,4 +1,4 @@
-import { BaseUseCase, createZodValidator } from "@nubbix/domain";
+import { BaseUseCase, createZodValidator, TransactionManager } from "@nubbix/domain";
 import { Account, AccountRepository, AccountType, Slug } from "../../domain";
 import { User, UserRepository, RoleValue } from "../../../identity/domain";
 import {
@@ -14,7 +14,8 @@ export class CreateAccountUseCase extends BaseUseCase<CreateAccountInput, Create
   constructor(
     private accountRepository: AccountRepository,
     private userRepository: UserRepository,
-    private passwordHasher: PasswordHasher
+    private passwordHasher: PasswordHasher,
+    private transactionManager: TransactionManager
   ) {
     super();
   }
@@ -43,27 +44,28 @@ export class CreateAccountUseCase extends BaseUseCase<CreateAccountInput, Create
 
     account.validate();
 
-    const savedAccount = await this.accountRepository.save(account);
-
     const randomPassword = generateRandomPassword();
-
     const hashedPassword = await this.passwordHasher.hash(randomPassword);
 
-    const superAdmin = new User({
-      name: input.responsibleName,
-      email: input.responsibleEmail,
-      password: hashedPassword,
-      accountId: savedAccount.id.value,
-      role: RoleValue.SUPER_ADMIN,
+    return await this.transactionManager.runInTransaction(async (tx) => {
+      const savedAccount = await this.accountRepository.save(account, tx);
+
+      const user = new User({
+        name: input.responsibleName,
+        email: input.responsibleEmail,
+        password: hashedPassword,
+        accountId: savedAccount.id.value,
+        role: RoleValue.SUPER_ADMIN,
+      });
+
+      user.validate();
+
+      await this.userRepository.save(user, tx);
+
+      return {
+        accountId: savedAccount.id.value,
+        slug: savedAccount.slug.value,
+      };
     });
-
-    superAdmin.validate();
-
-    await this.userRepository.save(superAdmin);
-
-    return {
-      accountId: savedAccount.id.value,
-      slug: savedAccount.slug.value,
-    };
   }
 }

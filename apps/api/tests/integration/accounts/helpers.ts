@@ -3,6 +3,7 @@ import { CreateAccountUseCase } from "../../../src/modules/accounts/application/
 import { DrizzleAccountRepository } from "../../../src/modules/accounts/infrastructure/repositories/DrizzleAccountRepository";
 import { DrizzleUserRepository } from "../../../src/modules/identity/infrastructure/repositories/DrizzleUserRepository";
 import { BunPasswordHasher } from "../../../src/modules/accounts/infrastructure/services/BunPasswordHasher";
+import { DrizzleTransactionManager } from "../../../src/shared/infrastructure/transactions";
 import type { CreateAccountInput } from "../../../src/modules/accounts/application/dtos/CreateAccountDTO";
 import { faker } from "@faker-js/faker";
 import { AccountTypeValue } from "../../../src/modules/accounts/domain";
@@ -11,7 +12,8 @@ export function createAccountUseCaseFactory(db: any) {
   return new CreateAccountUseCase(
     new DrizzleAccountRepository(db),
     new DrizzleUserRepository(db),
-    new BunPasswordHasher()
+    new BunPasswordHasher(),
+    new DrizzleTransactionManager(db)
   );
 }
 

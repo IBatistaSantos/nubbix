@@ -5,7 +5,7 @@ import { InMemoryAccountRepository } from "../../../infrastructure/repositories/
 import { InMemoryUserRepository } from "../../../../identity/infrastructure/repositories/InMemoryUserRepository";
 import { BunPasswordHasher } from "../../../infrastructure/services/BunPasswordHasher";
 import { Account, AccountTypeValue } from "../../../domain";
-import { ID } from "@nubbix/domain";
+import { ID, TransactionManager } from "@nubbix/domain";
 import { ConflictError } from "../../../../../shared/errors";
 
 describe("CreateAccountUseCase", () => {
@@ -13,12 +13,23 @@ describe("CreateAccountUseCase", () => {
   let accountRepository: InMemoryAccountRepository;
   let userRepository: InMemoryUserRepository;
   let passwordHasher: BunPasswordHasher;
+  let transactionManager: TransactionManager;
 
   beforeEach(() => {
     accountRepository = new InMemoryAccountRepository();
     userRepository = new InMemoryUserRepository();
     passwordHasher = new BunPasswordHasher();
-    useCase = new CreateAccountUseCase(accountRepository, userRepository, passwordHasher);
+    transactionManager = {
+      runInTransaction: async <T>(callback: (tx: unknown) => Promise<T>): Promise<T> => {
+        return await callback(null);
+      },
+    };
+    useCase = new CreateAccountUseCase(
+      accountRepository,
+      userRepository,
+      passwordHasher,
+      transactionManager
+    );
   });
 
   it("should create account and super admin user successfully", async () => {
