@@ -1,3 +1,13 @@
 export { db } from "./client";
-export { accounts, users, accountTypeEnum, roleEnum, statusEnum } from "./schema";
+export {
+  accounts,
+  users,
+  templates,
+  accountTypeEnum,
+  roleEnum,
+  statusEnum,
+  channelEnum,
+  templateContextEnum,
+  languageEnum,
+} from "./schema";
 export type { InferSelectModel, InferInsertModel } from "drizzle-orm";

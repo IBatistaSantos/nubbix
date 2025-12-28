@@ -1,10 +1,29 @@
-import { pgTable, text, timestamp, pgEnum, varchar, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  pgEnum,
+  varchar,
+  uniqueIndex,
+  jsonb,
+  boolean,
+} from "drizzle-orm/pg-core";
 
 export const accountTypeEnum = pgEnum("account_type", ["TRANSACTIONAL", "RECURRING"]);
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN", "SUPER_ADMIN"]);
 
 export const statusEnum = pgEnum("status", ["active", "inactive"]);
+
+export const channelEnum = pgEnum("channel", ["email", "whatsapp"]);
+
+export const templateContextEnum = pgEnum("template_context", [
+  "account.welcome",
+  "participant.registration",
+  "forgot.password",
+]);
+
+export const languageEnum = pgEnum("language", ["pt-BR", "en-US", "es-ES"]);
 
 export const accounts = pgTable("accounts", {
   id: text("id").primaryKey(),
@@ -44,3 +63,26 @@ export const users = pgTable(
     ),
   })
 );
+
+export const templates = pgTable("templates", {
+  id: text("id").primaryKey(),
+  channel: channelEnum("channel").notNull(),
+  subject: text("subject"),
+  body: text("body").notNull(),
+  context: templateContextEnum("context").notNull(),
+  language: languageEnum("language").notNull(),
+  accountId: text("account_id"),
+  isDefault: boolean("is_default").notNull().default(false),
+  attachments: jsonb("attachments").$type<
+    Array<{
+      url: string;
+      type: string;
+      filename?: string;
+      mimeType?: string;
+    }>
+  >(),
+  status: statusEnum("status").notNull().default("active"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  deletedAt: timestamp("deleted_at"),
+});

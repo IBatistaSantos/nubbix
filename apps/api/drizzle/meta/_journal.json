@@ -8,6 +8,13 @@
       "when": 1766864178699,
       "tag": "0000_premium_lake",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766954312396,
+      "tag": "0001_square_glorian",
+      "breakpoints": true
     }
   ]
 }
