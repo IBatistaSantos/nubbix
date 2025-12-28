@@ -2,12 +2,17 @@ import { BaseEntity, ID, Repository } from "@nubbix/domain";
 import { eq, and, isNull } from "drizzle-orm";
 import { PgTable } from "drizzle-orm/pg-core";
 import { db } from "../db";
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 export abstract class BaseDrizzleRepository<
   TEntity extends BaseEntity,
   TSchema,
 > implements Repository<TEntity> {
-  protected readonly db = db;
+  protected readonly db: PostgresJsDatabase<any>;
+
+  constructor(database?: PostgresJsDatabase<any>) {
+    this.db = database || db;
+  }
 
   protected abstract toDomain(schema: TSchema): TEntity;
 
