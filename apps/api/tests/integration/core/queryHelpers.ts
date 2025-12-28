@@ -30,6 +30,19 @@ export class QueryHelpers {
     return this.findOne(table, (t) => and(eq(slugColumn, slug), isNull(t.deletedAt)));
   }
 
+  static async findByEmailAndAccountId(
+    table: any,
+    emailColumn: any,
+    accountIdColumn: any,
+    email: string,
+    accountId: string
+  ) {
+    const normalizedEmail = this.normalizeEmail(email);
+    return this.findOne(table, (t) =>
+      and(eq(emailColumn, normalizedEmail), eq(accountIdColumn, accountId), isNull(t.deletedAt))
+    );
+  }
+
   static async exists(table: any, where: (table: any) => any): Promise<boolean> {
     const db = this.getDb();
     const result = await db.select().from(table).where(where(table)).limit(1);

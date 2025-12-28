@@ -30,9 +30,15 @@ describe("CreateAccountController Integration", () => {
     const input = createAccountInput();
     const email = QueryHelpers.normalizeEmail(input.responsibleEmail);
 
-    await tester.run(input);
+    const output = await tester.run(input);
 
-    const user = await QueryHelpers.findByEmail(users, users.email, input.responsibleEmail);
+    const user = await QueryHelpers.findByEmailAndAccountId(
+      users,
+      users.email,
+      users.accountId,
+      input.responsibleEmail,
+      output.accountId
+    );
     TestAssertions.expectEntityExists(user);
     TestAssertions.expectProperty(user!, "email", email);
     TestAssertions.expectProperty(user!, "role", "SUPER_ADMIN");
@@ -60,22 +66,41 @@ describe("CreateAccountController Integration", () => {
     await expect(tester.run(duplicateInput)).rejects.toThrow();
   });
 
-  it("should rollback transaction when user creation fails", async () => {
+  it("should allow same email in different accounts", async () => {
     const tester = createAccountTester();
+    const sharedEmail = "shared@example.com";
 
-    const existingEmail = "existing@example.com";
-    const firstInput = createAccountInput({ responsibleEmail: existingEmail });
-    await tester.run(firstInput);
+    const firstInput = createAccountInput({ responsibleEmail: sharedEmail });
+    const firstOutput = await tester.run(firstInput);
 
     const secondInput = createAccountInput({
-      responsibleEmail: existingEmail,
-      slug: "different-slug",
+      responsibleEmail: sharedEmail,
+      slug: "different-account-slug",
     });
+    const secondOutput = await tester.run(secondInput);
 
-    await expect(tester.run(secondInput)).rejects.toThrow();
+    expect(firstOutput).toHaveProperty("accountId");
+    expect(secondOutput).toHaveProperty("accountId");
+    expect(firstOutput.accountId).not.toBe(secondOutput.accountId);
 
-    const account = await QueryHelpers.findBySlug(accounts, accounts.slug, secondInput.slug);
-    expect(account).toBeNull();
+    const firstUser = (await QueryHelpers.findByEmailAndAccountId(
+      users,
+      users.email,
+      users.accountId,
+      sharedEmail,
+      firstOutput.accountId
+    )) as typeof users.$inferSelect | null;
+    const secondUser = (await QueryHelpers.findByEmailAndAccountId(
+      users,
+      users.email,
+      users.accountId,
+      sharedEmail,
+      secondOutput.accountId
+    )) as typeof users.$inferSelect | null;
+
+    TestAssertions.expectEntityExists(firstUser);
+    TestAssertions.expectEntityExists(secondUser);
+    expect(firstUser!.accountId).not.toBe(secondUser!.accountId);
   });
 
   it("should commit transaction when both account and user are created successfully", async () => {
@@ -95,33 +120,30 @@ describe("CreateAccountController Integration", () => {
     TestAssertions.expectProperty(account!, "name", accountName);
     TestAssertions.expectProperty(account!, "slug", slug);
 
-    const user = await QueryHelpers.findByEmail(users, users.email, responsibleEmail);
+    const user = (await QueryHelpers.findByEmailAndAccountId(
+      users,
+      users.email,
+      users.accountId,
+      responsibleEmail,
+      account!.id
+    )) as typeof users.$inferSelect | null;
     TestAssertions.expectEntityExists(user);
     TestAssertions.expectProperty(user!, "email", QueryHelpers.normalizeEmail(responsibleEmail));
     const accountId = account!.id;
     TestAssertions.expectProperty(user!, "accountId", accountId);
   });
 
-  it("should ensure atomicity - if user creation fails, account should not be persisted", async () => {
+  it("should ensure atomicity - if account creation fails, transaction should rollback", async () => {
     const tester = createAccountTester();
-    const db = tester.getDatabase();
 
-    const existingEmail = "duplicate@example.com";
-    const firstInput = createAccountInput({ responsibleEmail: existingEmail });
-    await tester.run(firstInput);
+    const firstInput = createAccountInput();
+    const firstOutput = await tester.run(firstInput);
 
-    const uniqueSlug = "unique-slug-for-rollback-test";
-    const secondInput = createAccountInput({
-      responsibleEmail: existingEmail,
-      slug: uniqueSlug,
-    });
+    const duplicateSlugInput = createAccountInput({ slug: firstInput.slug });
+    await expect(tester.run(duplicateSlugInput)).rejects.toThrow();
 
-    await expect(tester.run(secondInput)).rejects.toThrow();
-
-    const account = await QueryHelpers.findBySlug(accounts, accounts.slug, uniqueSlug);
-    expect(account).toBeNull();
-
-    const firstAccount = await QueryHelpers.findByEmail(users, users.email, existingEmail);
-    TestAssertions.expectEntityExists(firstAccount);
+    const accountsList = await tester.getDatabase().select().from(accounts);
+    const accountsWithSlug = accountsList.filter((a) => a.slug === firstInput.slug);
+    expect(accountsWithSlug).toHaveLength(1);
   });
 });
