@@ -32,7 +32,6 @@ export class SendNotificationUseCase extends BaseUseCase<
     const language = input.language ? Language.fromValue(input.language as any) : Language.ptBR();
     const channel = Channel.fromValue(input.channel as any);
 
-    // Buscar template por contexto, language, channel e accountId
     let template = null;
 
     if (input.accountId) {
@@ -58,18 +57,14 @@ export class SendNotificationUseCase extends BaseUseCase<
       );
     }
 
-    // Renderizar variáveis no template
     const rendered = template.render(input.variables);
 
-    // From padrão
     const from = {
       name: "Nubbix",
       email: channel.isEmail() ? "noreply@nubbix.com" : undefined,
       phone: channel.isWhatsapp() ? undefined : undefined,
     };
 
-    // Criar entidade Notification
-    // Se accountId não fornecido, usar um valor padrão do sistema
     const accountId = input.accountId || "system";
 
     const notification = new Notification({
@@ -98,18 +93,15 @@ export class SendNotificationUseCase extends BaseUseCase<
 
     notification.validate();
 
-    // Enviar via provider
     try {
       const providerMessageId = await this.notificationProvider.send(notification);
       notification.markAsSent(providerMessageId);
     } catch (error) {
       notification.markAsFailed();
-      // Salvar notificação com status failed antes de lançar o erro
       await this.notificationRepository.save(notification);
       throw error;
     }
 
-    // Salvar no repositório
     await this.notificationRepository.save(notification);
 
     return notification.toJSON();
