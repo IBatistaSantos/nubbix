@@ -111,7 +111,7 @@ export async function stopTestDatabase(): Promise<void> {
 
 export async function cleanupTestDatabase(): Promise<void> {
   if (db) {
-    await db.execute(sql`TRUNCATE TABLE accounts, users RESTART IDENTITY CASCADE`);
+    await db.execute(sql`TRUNCATE TABLE accounts, users, templates RESTART IDENTITY CASCADE`);
   }
 }
 
