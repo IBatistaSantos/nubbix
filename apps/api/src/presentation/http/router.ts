@@ -3,10 +3,12 @@ import { errorHandler } from "../../infrastructure/http/middleware/errorHandler"
 import { ModuleRegistry } from "../../shared/presentation/http/core/ModuleRegistry";
 import { registerHonoRoutes } from "../../infrastructure/http/adapters/hono/HonoRouteAdapter";
 import { accountRoutes } from "../../modules/accounts/presentation/routes/accountRoutes";
+import { templateRoutes } from "../../modules/notifications/presentation/routes/templateRoutes";
 
 const moduleRegistry = new ModuleRegistry();
 
 moduleRegistry.register("accounts", accountRoutes);
+moduleRegistry.register("templates", templateRoutes);
 
 export function createRouter(): Hono {
   const app = new Hono();
