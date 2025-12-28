@@ -6,7 +6,7 @@ import { InvalidResetTokenException } from "./exceptions/InvalidResetTokenExcept
 interface UserProps extends BaseProps {
   name: string;
   email: string;
-  password: string;
+  password: string | null;
   resetPasswordToken?: string | null;
   resetPasswordTokenExpiresAt?: Date | null;
   accountId: string;
@@ -32,7 +32,7 @@ type UserUpdateData = Omit<
 export class User extends BaseEntity {
   private _name: string;
   private _email: Email;
-  private _password: string;
+  private _password: string | null;
   private _resetPasswordToken?: string | null;
   private _resetPasswordTokenExpiresAt?: Date | null;
   private _avatar: string | null;
@@ -86,7 +86,6 @@ export class User extends BaseEntity {
   validate(): void {
     const errors: Array<{ path: string; message: string }> = [];
 
-    // Validate name
     if (!this._name || this._name.trim().length === 0) {
       errors.push({
         path: "name",
@@ -101,7 +100,6 @@ export class User extends BaseEntity {
       });
     }
 
-    // Validate email
     if (!this._email) {
       errors.push({
         path: "email",
@@ -109,22 +107,20 @@ export class User extends BaseEntity {
       });
     }
 
-    // Validate password
-    if (!this._password || this._password.trim().length === 0) {
-      errors.push({
-        path: "password",
-        message: "Password cannot be empty",
-      });
+    if (this._password !== null && this._password !== undefined) {
+      if (this._password.trim().length === 0) {
+        errors.push({
+          path: "password",
+          message: "Password cannot be empty",
+        });
+      } else if (this._password.length < 8) {
+        errors.push({
+          path: "password",
+          message: "Password must be at least 8 characters",
+        });
+      }
     }
 
-    if (this._password && this._password.length < 8) {
-      errors.push({
-        path: "password",
-        message: "Password must be at least 8 characters",
-      });
-    }
-
-    // Validate accountId
     if (!this._accountId || this._accountId.trim().length === 0) {
       errors.push({
         path: "accountId",
@@ -132,7 +128,6 @@ export class User extends BaseEntity {
       });
     }
 
-    // Validate role
     if (!this._role) {
       errors.push({
         path: "role",
@@ -179,7 +174,7 @@ export class User extends BaseEntity {
     }
   }
 
-  updatePassword(password: string) {
+  updatePassword(password: string | null) {
     this._password = password;
     this._resetPasswordToken = null;
     this._resetPasswordTokenExpiresAt = null;
