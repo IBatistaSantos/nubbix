@@ -2,6 +2,7 @@ export { BaseEntity, type BaseProps } from "./entity/BaseEntity";
 export { BaseUseCase } from "./usecase/BaseUseCase";
 export type { InputValidator } from "./usecase/InputValidator";
 export type { Repository } from "./repository/Repository";
+export type { TransactionManager, TransactionContext } from "./repository/TransactionManager";
 export { ID } from "./vo/ID";
 export { Status, StatusValue } from "./vo/Status";
 export { Email } from "./vo/Email";
