@@ -2,7 +2,8 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { readdir, readFile } from "fs/promises";
-import { join } from "path";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 import { sql } from "drizzle-orm";
 
 let db: PostgresJsDatabase<any> | null = null;
@@ -19,7 +20,9 @@ const getConnectionString = (): string => {
 };
 
 async function runMigrations(database: PostgresJsDatabase<any>): Promise<void> {
-  const migrationsDir = join(process.cwd(), "drizzle");
+  const currentDir = dirname(fileURLToPath(import.meta.url));
+  const apiDir = join(currentDir, "../..");
+  const migrationsDir = join(apiDir, "drizzle");
   const files = await readdir(migrationsDir);
   const sqlFiles = files.filter((f) => f.endsWith(".sql")).sort();
 
