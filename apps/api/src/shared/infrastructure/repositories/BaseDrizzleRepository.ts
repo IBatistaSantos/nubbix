@@ -1,4 +1,4 @@
-import { BaseEntity, ID, Repository } from "@nubbix/domain";
+import { BaseEntity, ID, Repository, TransactionContext } from "@nubbix/domain";
 import { eq, and, isNull } from "drizzle-orm";
 import { PgTable } from "drizzle-orm/pg-core";
 import { db } from "../db";
@@ -20,9 +20,17 @@ export abstract class BaseDrizzleRepository<
 
   protected abstract getTable(): PgTable<any>;
 
-  async findById(id: ID): Promise<TEntity | null> {
+  protected getDatabase(tx?: TransactionContext): PostgresJsDatabase<any> {
+    if (tx) {
+      return tx as PostgresJsDatabase<any>;
+    }
+    return this.db;
+  }
+
+  async findById(id: ID, tx?: TransactionContext): Promise<TEntity | null> {
     const table = this.getTable();
-    const result = await this.db
+    const database = this.getDatabase(tx);
+    const result = await database
       .select()
       .from(table)
       .where(and(eq((table as any).id, id.value), isNull((table as any).deletedAt)))
@@ -35,14 +43,15 @@ export abstract class BaseDrizzleRepository<
     return this.toDomain(result[0] as TSchema);
   }
 
-  async save(entity: TEntity): Promise<TEntity> {
+  async save(entity: TEntity, tx?: TransactionContext): Promise<TEntity> {
     const table = this.getTable();
     const schema = this.toSchema(entity);
+    const database = this.getDatabase(tx);
 
-    const existing = await this.findById(entity.id);
+    const existing = await this.findById(entity.id, tx);
 
     if (existing) {
-      await this.db
+      await database
         .update(table)
         .set({
           ...schema,
@@ -52,14 +61,15 @@ export abstract class BaseDrizzleRepository<
 
       return entity;
     } else {
-      await this.db.insert(table).values(schema as any);
+      await database.insert(table).values(schema as any);
       return entity;
     }
   }
 
-  async delete(id: ID): Promise<void> {
+  async delete(id: ID, tx?: TransactionContext): Promise<void> {
     const table = this.getTable();
-    await this.db
+    const database = this.getDatabase(tx);
+    await database
       .update(table)
       .set({
         deletedAt: new Date(),
@@ -68,9 +78,10 @@ export abstract class BaseDrizzleRepository<
       .where(eq((table as any).id, id.value));
   }
 
-  async exists(id: ID): Promise<boolean> {
+  async exists(id: ID, tx?: TransactionContext): Promise<boolean> {
     const table = this.getTable();
-    const result = await this.db
+    const database = this.getDatabase(tx);
+    const result = await database
       .select()
       .from(table)
       .where(and(eq((table as any).id, id.value), isNull((table as any).deletedAt)))
