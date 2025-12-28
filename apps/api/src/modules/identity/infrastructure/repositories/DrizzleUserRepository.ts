@@ -21,7 +21,7 @@ export class DrizzleUserRepository
       id: schema.id,
       name: schema.name,
       email: schema.email,
-      password: schema.password,
+      password: schema.password ?? null,
       avatar: schema.avatar ?? undefined,
       accountId: schema.accountId,
       role: schema.role as any,
@@ -90,5 +90,25 @@ export class DrizzleUserRepository
       .limit(1);
 
     return result.length > 0;
+  }
+
+  async findByEmailAndAccountId(email: Email, accountId: ID): Promise<User | null> {
+    const result = await this.db
+      .select()
+      .from(users)
+      .where(
+        and(
+          eq(users.email, email.value),
+          eq(users.accountId, accountId.value),
+          isNull(users.deletedAt)
+        )
+      )
+      .limit(1);
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    return this.toDomain(result[0]);
   }
 }

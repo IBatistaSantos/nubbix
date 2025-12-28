@@ -5,4 +5,5 @@ export interface UserRepository extends Repository<User> {
   findByEmail(email: Email): Promise<User | null>;
   existsByEmail(email: Email): Promise<boolean>;
   existsByEmailAndAccountId(email: Email, accountId: ID): Promise<boolean>;
+  findByEmailAndAccountId(email: Email, accountId: ID): Promise<User | null>;
 }

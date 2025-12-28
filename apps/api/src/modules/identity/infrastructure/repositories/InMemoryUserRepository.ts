@@ -30,11 +30,25 @@ export class InMemoryUserRepository implements UserRepository {
     return accountEmails.has(email.value);
   }
 
+  async findByEmailAndAccountId(email: Email, accountId: ID): Promise<User | null> {
+    const accountEmails = this.emailsByAccount.get(accountId.value);
+    if (!accountEmails || !accountEmails.has(email.value)) {
+      return null;
+    }
+
+    for (const user of this.users.values()) {
+      if (user.email.value === email.value && user.accountId === accountId.value) {
+        return user;
+      }
+    }
+
+    return null;
+  }
+
   async save(entity: User): Promise<User> {
     this.users.set(entity.id.value, entity);
     this.emails.set(entity.email.value, entity.id.value);
 
-    // Atualizar índice por accountId
     if (!this.emailsByAccount.has(entity.accountId)) {
       this.emailsByAccount.set(entity.accountId, new Set());
     }
