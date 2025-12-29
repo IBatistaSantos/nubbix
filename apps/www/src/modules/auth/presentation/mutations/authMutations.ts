@@ -16,8 +16,14 @@ export function useLoginMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: LoginInput): Promise<LoginOutput> => {
-      return authService.login(input);
+    mutationFn: ({
+      input,
+      accountSlug,
+    }: {
+      input: LoginInput;
+      accountSlug: string;
+    }): Promise<LoginOutput> => {
+      return authService.login(input, accountSlug);
     },
     onSuccess: (data) => {
       queryClient.setQueryData(AUTH_QUERY_KEY, data.user);
@@ -42,16 +48,28 @@ export function useLogoutMutation() {
 
 export function useForgotPasswordMutation() {
   return useMutation({
-    mutationFn: (input: ForgotPasswordInput): Promise<ForgotPasswordOutput> => {
-      return authService.forgotPassword(input);
+    mutationFn: ({
+      input,
+      accountSlug,
+    }: {
+      input: ForgotPasswordInput;
+      accountSlug: string;
+    }): Promise<ForgotPasswordOutput> => {
+      return authService.forgotPassword(input, accountSlug);
     },
   });
 }
 
 export function useResetPasswordMutation() {
   return useMutation({
-    mutationFn: (input: ResetPasswordInput): Promise<ResetPasswordOutput> => {
-      return authService.resetPassword(input);
+    mutationFn: ({
+      input,
+      accountSlug,
+    }: {
+      input: ResetPasswordInput;
+      accountSlug: string;
+    }): Promise<ResetPasswordOutput> => {
+      return authService.resetPassword(input, accountSlug);
     },
   });
 }
