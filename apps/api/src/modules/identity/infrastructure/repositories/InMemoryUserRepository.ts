@@ -75,4 +75,13 @@ export class InMemoryUserRepository implements UserRepository {
   async exists(id: ID): Promise<boolean> {
     return this.users.has(id.value);
   }
+
+  async findByResetToken(token: string): Promise<User | null> {
+    for (const user of this.users.values()) {
+      if (user.resetPasswordToken === token) {
+        return user;
+      }
+    }
+    return null;
+  }
 }

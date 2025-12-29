@@ -1,34 +1,38 @@
-import { describe, it, expect, beforeEach } from "bun:test";
+import { describe, it, expect, beforeEach, mock } from "bun:test";
 import { faker } from "@faker-js/faker";
 import { CreateAccountUseCase } from "../CreateAccountUseCase";
 import { InMemoryAccountRepository } from "../../../infrastructure/repositories/InMemoryAccountRepository";
 import { InMemoryUserRepository } from "../../../../identity/infrastructure/repositories/InMemoryUserRepository";
-import { BunPasswordHasher } from "../../../infrastructure/services/BunPasswordHasher";
 import { Account, AccountTypeValue } from "../../../domain";
-import { ID, TransactionManager } from "@nubbix/domain";
+import { ID, TransactionManager, Email } from "@nubbix/domain";
 import { ConflictError } from "../../../../../shared/errors";
+import { SendNotificationUseCase } from "../../../../notifications/application/use-cases/SendNotificationUseCase";
 
 describe("CreateAccountUseCase", () => {
   let useCase: CreateAccountUseCase;
   let accountRepository: InMemoryAccountRepository;
   let userRepository: InMemoryUserRepository;
-  let passwordHasher: BunPasswordHasher;
   let transactionManager: TransactionManager;
+  let sendNotificationUseCase: SendNotificationUseCase;
+  let sendNotificationMock: ReturnType<typeof mock>;
 
   beforeEach(() => {
     accountRepository = new InMemoryAccountRepository();
     userRepository = new InMemoryUserRepository();
-    passwordHasher = new BunPasswordHasher();
     transactionManager = {
       runInTransaction: async <T>(callback: (tx: unknown) => Promise<T>): Promise<T> => {
         return await callback(null);
       },
     };
+    sendNotificationMock = mock(() => Promise.resolve({} as any));
+    sendNotificationUseCase = {
+      run: sendNotificationMock,
+    } as any;
     useCase = new CreateAccountUseCase(
       accountRepository,
       userRepository,
-      passwordHasher,
-      transactionManager
+      transactionManager,
+      sendNotificationUseCase
     );
   });
 
@@ -49,6 +53,17 @@ describe("CreateAccountUseCase", () => {
     expect(output).toHaveProperty("accountId");
     expect(output).toHaveProperty("slug");
     expect(output.slug).toBe(input.slug);
+
+    const user = await userRepository.findByEmail(Email.create(input.responsibleEmail));
+    expect(user).not.toBeNull();
+    expect(user!.password).toBeNull();
+    expect(user!.resetPasswordToken).not.toBeNull();
+    expect(user!.resetPasswordTokenExpiresAt).not.toBeNull();
+    expect(sendNotificationMock).toHaveBeenCalledTimes(1);
+    const notificationCall = sendNotificationMock.mock.calls[0][0];
+    expect(notificationCall.context).toBe("account.welcome");
+    expect(notificationCall.to.email).toBe(input.responsibleEmail);
+    expect(notificationCall.variables.url).toContain("/onboarding?token=");
   });
 
   it("should create account with minimal required fields", async () => {
@@ -64,6 +79,11 @@ describe("CreateAccountUseCase", () => {
 
     expect(output).toHaveProperty("accountId");
     expect(output).toHaveProperty("slug");
+
+    const user = await userRepository.findByEmail(Email.create(input.responsibleEmail));
+    expect(user).not.toBeNull();
+    expect(user!.password).toBeNull();
+    expect(user!.resetPasswordToken).not.toBeNull();
   });
 
   it("should throw error when slug already exists", async () => {

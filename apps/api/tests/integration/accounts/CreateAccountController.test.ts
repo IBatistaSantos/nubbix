@@ -42,6 +42,9 @@ describe("CreateAccountController Integration", () => {
     TestAssertions.expectEntityExists(user);
     TestAssertions.expectProperty(user!, "email", email);
     TestAssertions.expectProperty(user!, "role", "SUPER_ADMIN");
+    expect(user!.password).toBeNull();
+    expect(user!.resetPasswordToken).not.toBeNull();
+    expect(user!.resetPasswordTokenExpiresAt).not.toBeNull();
   });
 
   it("should return validation error for invalid input", async () => {
@@ -70,12 +73,15 @@ describe("CreateAccountController Integration", () => {
     const tester = createAccountTester();
     const sharedEmail = "shared@example.com";
 
-    const firstInput = createAccountInput({ responsibleEmail: sharedEmail });
+    const firstInput = createAccountInput({ 
+      responsibleEmail: sharedEmail,
+      slug: "first-account-slug",
+    });
     const firstOutput = await tester.run(firstInput);
 
     const secondInput = createAccountInput({
       responsibleEmail: sharedEmail,
-      slug: "different-account-slug",
+      slug: "second-account-slug",
     });
     const secondOutput = await tester.run(secondInput);
 
@@ -131,6 +137,12 @@ describe("CreateAccountController Integration", () => {
     TestAssertions.expectProperty(user!, "email", QueryHelpers.normalizeEmail(responsibleEmail));
     const accountId = account!.id;
     TestAssertions.expectProperty(user!, "accountId", accountId);
+    expect(user!.password).toBeNull();
+    expect(user!.resetPasswordToken).not.toBeNull();
+    expect(user!.resetPasswordTokenExpiresAt).not.toBeNull();
+    const expiryDate = new Date(user!.resetPasswordTokenExpiresAt!);
+    const now = new Date();
+    expect(expiryDate.getTime()).toBeGreaterThan(now.getTime());
   });
 
   it("should ensure atomicity - if account creation fails, transaction should rollback", async () => {
@@ -142,7 +154,8 @@ describe("CreateAccountController Integration", () => {
     const duplicateSlugInput = createAccountInput({ slug: firstInput.slug });
     await expect(tester.run(duplicateSlugInput)).rejects.toThrow();
 
-    const accountsList = await tester.getDatabase().select().from(accounts);
+    const db = tester.getDatabase();
+    const accountsList = await db.select().from(accounts);
     const accountsWithSlug = accountsList.filter((a) => a.slug === firstInput.slug);
     expect(accountsWithSlug).toHaveLength(1);
   });

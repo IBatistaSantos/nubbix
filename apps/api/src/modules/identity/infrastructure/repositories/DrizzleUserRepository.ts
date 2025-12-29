@@ -111,4 +111,18 @@ export class DrizzleUserRepository
 
     return this.toDomain(result[0]);
   }
+
+  async findByResetToken(token: string): Promise<User | null> {
+    const result = await this.db
+      .select()
+      .from(users)
+      .where(and(eq(users.resetPasswordToken, token), isNull(users.deletedAt)))
+      .limit(1);
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    return this.toDomain(result[0]);
+  }
 }

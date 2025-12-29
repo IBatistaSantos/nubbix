@@ -9,16 +9,18 @@ export interface UseCaseTesterConfig<TInput, TOutput> {
 export class UseCaseTester<TInput, TOutput> {
   private db: PostgresJsDatabase<any> | null = null;
   private useCase: any = null;
+  private initialized = false;
 
   constructor(private config: UseCaseTesterConfig<TInput, TOutput>) {}
 
   private ensureInitialized() {
-    if (!this.db) {
+    if (!this.initialized) {
       this.db = getTestDatabase();
       if (!this.db) {
         throw new Error("Database not available");
       }
       this.useCase = this.config.useCaseFactory(this.db);
+      this.initialized = true;
     }
   }
 

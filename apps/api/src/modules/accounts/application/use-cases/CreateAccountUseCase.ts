@@ -6,22 +6,22 @@ import {
   CreateAccountOutput,
   createAccountSchema,
 } from "../dtos/CreateAccountDTO";
-import { generateRandomPassword } from "../../../../shared/utils";
-import { PasswordHasher } from "../services/PasswordHasher";
+import { randomBytes } from "crypto";
 import { ConflictError } from "../../../../shared/errors";
+import { SendNotificationUseCase } from "../../../notifications/application/use-cases/SendNotificationUseCase";
 
 export class CreateAccountUseCase extends BaseUseCase<CreateAccountInput, CreateAccountOutput> {
   constructor(
     private accountRepository: AccountRepository,
     private userRepository: UserRepository,
-    private passwordHasher: PasswordHasher,
-    private transactionManager: TransactionManager
+    private transactionManager: TransactionManager,
+    private sendNotificationUseCase: SendNotificationUseCase
   ) {
     super();
   }
 
   protected getInputValidator(): ReturnType<typeof createZodValidator<CreateAccountInput>> {
-    // @ts-ignore
+    // @ts-expect-error - Zod schema type inference
     return createZodValidator(createAccountSchema);
   }
 
@@ -44,8 +44,8 @@ export class CreateAccountUseCase extends BaseUseCase<CreateAccountInput, Create
 
     account.validate();
 
-    const randomPassword = generateRandomPassword();
-    const hashedPassword = await this.passwordHasher.hash(randomPassword);
+    const token = randomBytes(32).toString("hex");
+    const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000;
 
     return await this.transactionManager.runInTransaction(async (tx) => {
       const savedAccount = await this.accountRepository.save(account, tx);
@@ -53,14 +53,32 @@ export class CreateAccountUseCase extends BaseUseCase<CreateAccountInput, Create
       const user = new User({
         name: input.responsibleName,
         email: input.responsibleEmail,
-        password: hashedPassword,
+        password: null,
         accountId: savedAccount.id.value,
         role: RoleValue.SUPER_ADMIN,
       });
 
+      user.resetPassword(token, TOKEN_EXPIRY_MS);
       user.validate();
 
       await this.userRepository.save(user, tx);
+
+      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+      const onboardingUrl = `${frontendUrl}/onboarding?token=${token}`;
+
+      await this.sendNotificationUseCase.run({
+        context: "account.welcome",
+        to: {
+          name: input.responsibleName,
+          email: input.responsibleEmail,
+        },
+        channel: "email",
+        accountId: savedAccount.id.value,
+        variables: {
+          name: input.responsibleName,
+          url: onboardingUrl,
+        },
+      });
 
       return {
         accountId: savedAccount.id.value,

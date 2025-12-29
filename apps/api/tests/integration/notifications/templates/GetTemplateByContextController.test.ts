@@ -43,15 +43,8 @@ describe("GetTemplateByContextController Integration", () => {
 
   it("should fallback to default template when accountId template not found", async () => {
     const createTester = createTemplateTester();
-    const uniqueContext = faker.helpers.arrayElement([
-      "account.welcome",
-      "participant.registration",
-      "forgot.password",
-    ]) as "account.welcome" | "participant.registration" | "forgot.password";
-    const uniqueLanguage = faker.helpers.arrayElement(["pt-BR", "en-US", "es-ES"]) as
-      | "pt-BR"
-      | "en-US"
-      | "es-ES";
+    const uniqueContext = "account.welcome" as const;
+    const uniqueLanguage = "pt-BR" as const;
     const nonExistentAccountId = faker.string.uuid();
 
     const defaultTemplate = await createTester.run(
@@ -79,15 +72,8 @@ describe("GetTemplateByContextController Integration", () => {
   it("should prefer accountId template over default", async () => {
     const accountId = faker.string.uuid();
     const createTester = createTemplateTester();
-    const uniqueContext = faker.helpers.arrayElement([
-      "account.welcome",
-      "participant.registration",
-      "forgot.password",
-    ]) as "account.welcome" | "participant.registration" | "forgot.password";
-    const uniqueLanguage = faker.helpers.arrayElement(["pt-BR", "en-US", "es-ES"]) as
-      | "pt-BR"
-      | "en-US"
-      | "es-ES";
+    const uniqueContext = "participant.registration" as const;
+    const uniqueLanguage = "en-US" as const;
 
     const accountTemplate = await createTester.run(
       createTemplateInput({
@@ -119,15 +105,8 @@ describe("GetTemplateByContextController Integration", () => {
 
   it("should get default template when accountId is not provided", async () => {
     const createTester = createTemplateTester();
-    const uniqueContext = faker.helpers.arrayElement([
-      "account.welcome",
-      "participant.registration",
-      "forgot.password",
-    ]) as "account.welcome" | "participant.registration" | "forgot.password";
-    const uniqueLanguage = faker.helpers.arrayElement(["pt-BR", "en-US", "es-ES"]) as
-      | "pt-BR"
-      | "en-US"
-      | "es-ES";
+    const uniqueContext = "forgot.password" as const;
+    const uniqueLanguage = "pt-BR" as const;
 
     const defaultTemplate = await createTester.run(
       createTemplateInput({
@@ -152,15 +131,8 @@ describe("GetTemplateByContextController Integration", () => {
   it("should return not found error when no template found", async () => {
     const getTester = createGetTemplateByContextTester();
     const accountId = faker.string.uuid();
-    const context = faker.helpers.arrayElement([
-      "account.welcome",
-      "participant.registration",
-      "forgot.password",
-    ]) as "account.welcome" | "participant.registration" | "forgot.password";
-    const language = faker.helpers.arrayElement(["pt-BR", "en-US", "es-ES"]) as
-      | "pt-BR"
-      | "en-US"
-      | "es-ES";
+    const context = "forgot.password" as const;
+    const language = "es-ES" as const;
 
     await expect(
       getTester.run({

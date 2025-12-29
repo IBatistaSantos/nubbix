@@ -6,4 +6,5 @@ export interface UserRepository extends Repository<User> {
   existsByEmail(email: Email): Promise<boolean>;
   existsByEmailAndAccountId(email: Email, accountId: ID): Promise<boolean>;
   findByEmailAndAccountId(email: Email, accountId: ID): Promise<User | null>;
+  findByResetToken(token: string): Promise<User | null>;
 }
