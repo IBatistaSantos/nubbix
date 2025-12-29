@@ -40,10 +40,20 @@ export class InMemoryTemplateRepository implements TemplateRepository {
       if (
         template.deletedAt === null &&
         template.context.value === context.value &&
-        template.language.value === language.value &&
-        (accountId !== undefined ? template.accountId === accountId : template.accountId === null)
+        template.language.value === language.value
       ) {
-        return template;
+        // If accountId is provided (not undefined and not null), match it exactly
+        // If accountId is undefined or null, match templates with accountId === null
+        const hasAccountId = accountId !== undefined && accountId !== null && accountId !== "";
+        if (hasAccountId) {
+          if (template.accountId === accountId) {
+            return template;
+          }
+        } else {
+          if (template.accountId === null) {
+            return template;
+          }
+        }
       }
     }
     return null;
@@ -60,10 +70,18 @@ export class InMemoryTemplateRepository implements TemplateRepository {
         template.deletedAt === null &&
         template.context.value === context.value &&
         template.language.value === language.value &&
-        template.channel.value === channel.value &&
-        (accountId !== undefined ? template.accountId === accountId : template.accountId === null)
+        template.channel.value === channel.value
       ) {
-        return template;
+        const hasAccountId = accountId !== undefined && accountId !== null && accountId !== "";
+        if (hasAccountId) {
+          if (template.accountId === accountId) {
+            return template;
+          }
+        } else {
+          if (template.accountId === null) {
+            return template;
+          }
+        }
       }
     }
     return null;
