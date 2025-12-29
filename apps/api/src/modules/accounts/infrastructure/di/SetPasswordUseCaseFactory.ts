@@ -23,4 +23,3 @@ export function createSetPasswordUseCase(): SetPasswordUseCase {
 
   return new SetPasswordUseCase(userRepository, passwordHasher, transactionManager);
 }
-

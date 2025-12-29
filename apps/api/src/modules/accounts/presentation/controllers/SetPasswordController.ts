@@ -11,4 +11,3 @@ export const setPasswordController: HttpHandler = async (request) => {
     data: output,
   };
 };
-
