@@ -9,4 +9,3 @@ export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export interface ForgotPasswordOutput {
   message: string;
 }
-

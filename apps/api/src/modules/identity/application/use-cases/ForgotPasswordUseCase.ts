@@ -10,10 +10,7 @@ import { SendNotificationUseCase } from "../../../notifications/application/use-
 
 const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-export class ForgotPasswordUseCase extends BaseUseCase<
-  ForgotPasswordInput,
-  ForgotPasswordOutput
-> {
+export class ForgotPasswordUseCase extends BaseUseCase<ForgotPasswordInput, ForgotPasswordOutput> {
   constructor(
     private userRepository: UserRepository,
     private transactionManager: TransactionManager,
@@ -22,16 +19,12 @@ export class ForgotPasswordUseCase extends BaseUseCase<
     super();
   }
 
-  protected getInputValidator(): ReturnType<
-    typeof createZodValidator<ForgotPasswordInput>
-  > {
+  protected getInputValidator(): ReturnType<typeof createZodValidator<ForgotPasswordInput>> {
     // @ts-expect-error - Zod schema type inference
     return createZodValidator(forgotPasswordSchema);
   }
 
-  protected async execute(
-    input: ForgotPasswordInput
-  ): Promise<ForgotPasswordOutput> {
+  protected async execute(input: ForgotPasswordInput): Promise<ForgotPasswordOutput> {
     const email = Email.create(input.email);
     const user = await this.userRepository.findByEmail(email);
 
@@ -71,4 +64,3 @@ export class ForgotPasswordUseCase extends BaseUseCase<
     };
   }
 }
-

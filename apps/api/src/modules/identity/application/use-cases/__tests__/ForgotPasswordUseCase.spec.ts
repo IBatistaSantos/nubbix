@@ -51,9 +51,7 @@ describe("ForgotPasswordUseCase", () => {
 
     const output = await useCase.run(input);
 
-    expect(output.message).toBe(
-      "If the email exists, a password reset link has been sent"
-    );
+    expect(output.message).toBe("If the email exists, a password reset link has been sent");
     expect(sendNotificationMock).toHaveBeenCalledTimes(1);
 
     const savedUser = await userRepository.findByEmail(Email.create(email));
@@ -74,9 +72,7 @@ describe("ForgotPasswordUseCase", () => {
 
     const output = await useCase.run(input);
 
-    expect(output.message).toBe(
-      "If the email exists, a password reset link has been sent"
-    );
+    expect(output.message).toBe("If the email exists, a password reset link has been sent");
     expect(sendNotificationMock).not.toHaveBeenCalled();
   });
 
@@ -109,4 +105,3 @@ describe("ForgotPasswordUseCase", () => {
     expect(Math.abs(expirationTime - expectedExpiration)).toBeLessThan(5000);
   });
 });
-

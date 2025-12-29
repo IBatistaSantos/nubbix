@@ -11,4 +11,3 @@ export const forgotPasswordController: HttpHandler = async (request) => {
     data: output,
   };
 };
-
