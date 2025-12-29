@@ -1,10 +1,8 @@
 import { apiClient } from "./apiClient";
-import { getAccountSlug } from "../utils/accountSlug";
 
 export interface LoginInput {
   email: string;
   password: string;
-  accountSlug: string;
 }
 
 export interface LoginOutput {
@@ -21,7 +19,6 @@ export interface LoginOutput {
 
 export interface ForgotPasswordInput {
   email: string;
-  accountSlug: string;
 }
 
 export interface ForgotPasswordOutput {
@@ -31,7 +28,6 @@ export interface ForgotPasswordOutput {
 export interface ResetPasswordInput {
   token: string;
   password: string;
-  accountSlug: string;
 }
 
 export interface ResetPasswordOutput {
@@ -50,12 +46,7 @@ export interface SetPasswordOutput {
 }
 
 export const authApi = {
-  async login(input: Omit<LoginInput, "accountSlug">): Promise<LoginOutput> {
-    const accountSlug = getAccountSlug();
-    if (!accountSlug) {
-      throw new Error("Account slug is required");
-    }
-
+  async login(input: LoginInput, accountSlug: string): Promise<LoginOutput> {
     const response = await apiClient<LoginOutput>("/auth/login", {
       method: "POST",
       body: {
@@ -78,13 +69,9 @@ export const authApi = {
   },
 
   async forgotPassword(
-    input: Omit<ForgotPasswordInput, "accountSlug">
+    input: ForgotPasswordInput,
+    accountSlug: string
   ): Promise<ForgotPasswordOutput> {
-    const accountSlug = getAccountSlug();
-    if (!accountSlug) {
-      throw new Error("Account slug is required");
-    }
-
     return apiClient<ForgotPasswordOutput>("/auth/forgot-password", {
       method: "POST",
       body: {
@@ -95,13 +82,9 @@ export const authApi = {
   },
 
   async resetPassword(
-    input: Omit<ResetPasswordInput, "accountSlug">
+    input: ResetPasswordInput,
+    accountSlug: string
   ): Promise<ResetPasswordOutput> {
-    const accountSlug = getAccountSlug();
-    if (!accountSlug) {
-      throw new Error("Account slug is required");
-    }
-
     return apiClient<ResetPasswordOutput>("/auth/reset-password", {
       method: "POST",
       body: {
