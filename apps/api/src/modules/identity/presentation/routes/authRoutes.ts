@@ -26,4 +26,3 @@ export class AuthRoutes implements ModuleRoutes {
 }
 
 export const authRoutes = new AuthRoutes();
-

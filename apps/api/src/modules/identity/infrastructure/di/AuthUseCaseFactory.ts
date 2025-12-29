@@ -40,11 +40,7 @@ export function createForgotPasswordUseCase(): ForgotPasswordUseCase {
 
   const sendNotificationUseCase = createSendNotificationUseCase();
 
-  return new ForgotPasswordUseCase(
-    userRepository,
-    transactionManager,
-    sendNotificationUseCase
-  );
+  return new ForgotPasswordUseCase(userRepository, transactionManager, sendNotificationUseCase);
 }
 
 export function createResetPasswordUseCase(): ResetPasswordUseCase {
@@ -60,10 +56,5 @@ export function createResetPasswordUseCase(): ResetPasswordUseCase {
     transactionManager = new DrizzleTransactionManager(db);
   }
 
-  return new ResetPasswordUseCase(
-    userRepository,
-    passwordHasher,
-    transactionManager
-  );
+  return new ResetPasswordUseCase(userRepository, passwordHasher, transactionManager);
 }
-
