@@ -9,12 +9,6 @@ function getDatabase(): PostgresJsDatabase<any> {
     const databaseUrl = process.env.DATABASE_URL;
 
     if (!databaseUrl) {
-      const isTestEnv = process.env.NODE_ENV === "test" || process.env.DATABASE_TEST_URL;
-      if (isTestEnv) {
-        throw new Error(
-          "Database should not be used in test environment. Use test database instead."
-        );
-      }
       throw new Error("DATABASE_URL environment variable is not set");
     }
 
