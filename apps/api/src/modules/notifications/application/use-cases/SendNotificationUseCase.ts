@@ -61,7 +61,7 @@ export class SendNotificationUseCase extends BaseUseCase<
 
     const from = {
       name: "Nubbix",
-      email: channel.isEmail() ? "noreply@nubbix.com" : undefined,
+      email: channel.isEmail() ? process.env.NOTIFICATION_FROM_EMAIL : undefined,
       phone: channel.isWhatsapp() ? undefined : undefined,
     };
 
