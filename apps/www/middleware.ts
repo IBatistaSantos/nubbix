@@ -36,7 +36,9 @@ export function middleware(request: NextRequest) {
   const isAccountRoute = pathname.startsWith("/accounts/");
   const isPublicAccountRoute =
     isAccountRoute &&
-    (pathname.includes("/login") || pathname.includes("/forgot-password") || pathname.includes("/reset-password"));
+    (pathname.includes("/login") ||
+      pathname.includes("/forgot-password") ||
+      pathname.includes("/reset-password"));
 
   if (isPublicAccountRoute) {
     return NextResponse.next();
