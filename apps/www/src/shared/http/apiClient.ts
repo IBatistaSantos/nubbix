@@ -18,12 +18,16 @@ export class ApiClientError extends Error {
 }
 
 const getBaseUrl = (): string => {
-  if (typeof window === "undefined") {
-    // Server-side: usar variável de ambiente ou default
-    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+  if (envUrl.startsWith("http://") || envUrl.startsWith("https://")) {
+    return envUrl.replace(/\/+$/, "");
   }
-  // Client-side: usar variável de ambiente
-  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+  const protocol = process.env.NODE_ENV === "production" ? "https://" : "http://";
+  const cleanUrl = envUrl.replace(/^\/+/, "").replace(/\/+$/, "");
+
+  return `${protocol}${cleanUrl}`;
 };
 
 export async function apiClient<T = unknown>(
@@ -31,7 +35,8 @@ export async function apiClient<T = unknown>(
   options: RequestOptions = {}
 ): Promise<T> {
   const baseUrl = getBaseUrl();
-  const url = `${baseUrl}/v1${endpoint}`;
+  const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = `${baseUrl}/v1${normalizedEndpoint}`;
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -41,7 +46,7 @@ export async function apiClient<T = unknown>(
   const config: RequestInit = {
     method: options.method || "GET",
     headers,
-    credentials: "include", // Importante: envia cookies automaticamente
+    credentials: "include",
     signal: options.signal,
   };
 
@@ -52,7 +57,6 @@ export async function apiClient<T = unknown>(
   try {
     const response = await fetch(url, config);
 
-    // Se não houver conteúdo, retornar vazio
     const contentType = response.headers.get("content-type");
     const hasContent = contentType?.includes("application/json");
 
