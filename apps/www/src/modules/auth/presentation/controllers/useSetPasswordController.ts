@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLoginMutation } from "../mutations/authMutations";
-// @ts-expect-error - TypeScript cache issue
+
 import { useSetPasswordMutation } from "../mutations/authMutations";
 import { setPasswordSchema, type SetPasswordInput } from "../../application/dtos/SetPasswordDTO";
 import { useEffect } from "react";
@@ -40,14 +40,12 @@ export function useSetPasswordController() {
     }
 
     try {
-      // Primeiro, definir a senha
       const setPasswordResult = await setPasswordMutation.mutateAsync({
         token: data.token,
         password: data.password,
         confirmPassword: data.confirmPassword,
       });
 
-      // Após definir a senha com sucesso, fazer login automático
       const accountSlug = window.location.pathname.match(/^\/accounts\/([a-zA-Z0-9_-]+)/)?.[1];
       if (!accountSlug) {
         throw new Error("Account slug não encontrado");
@@ -58,7 +56,6 @@ export function useSetPasswordController() {
         password: data.password,
       });
 
-      // Redirecionar para a área protegida após login bem-sucedido
       router.push(`/accounts/${accountSlug}`);
     } catch (error) {
       console.error("Set password error:", error);
