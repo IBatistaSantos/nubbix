@@ -188,12 +188,17 @@ Crie o arquivo `.env` na pasta `apps/api/` com as seguintes variáveis:
 PORT=3001
 NODE_ENV=development
 
-# Database (se aplicável)
-# DATABASE_URL=
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/database
 
-# Authentication (se aplicável)
-# JWT_SECRET=
-# JWT_EXPIRES_IN=
+# Authentication
+JWT_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+JWT_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----
+JWT_EXPIRES_IN=7d
+
+# CORS e Domínios
+BASE_DOMAIN=localhost:3000  # Em produção: nubbix.com ou vercel.app
+CORS_ORIGIN=http://localhost:3000  # Opcional: lista de origens permitidas separadas por vírgula
 ```
 
 ### Web (apps/www/.env.local)
@@ -203,6 +208,9 @@ Crie o arquivo `.env.local` na pasta `apps/www/` com as seguintes variáveis:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
 NODE_ENV=development
+
+# Opcional: para validação de domínio em produção
+# NEXT_PUBLIC_BASE_DOMAIN=nubbix.com
 ```
 
 ### Raiz do Projeto (.env)
@@ -301,6 +309,56 @@ Executa migrations do banco de dados automaticamente quando há mudanças no sch
      - `apps/api/drizzle.config.ts` (configuração do Drizzle)
 
 **Nota:** As migrations são executadas apenas na branch `main` para evitar aplicar migrations em ambientes de desenvolvimento.
+
+## Deploy na Vercel
+
+### Configuração de Subdomínios Dinâmicos
+
+O projeto suporta subdomínios dinâmicos para multi-tenancy (ex: `slug.nubbix.com` ou `slug.vercel.app`).
+
+#### Frontend (Next.js)
+
+1. **Configure o domínio na Vercel:**
+   - Vá em **Settings** → **Domains**
+   - Adicione seu domínio principal (ex: `nubbix.com`)
+   - Configure wildcard domain: `*.nubbix.com` (opcional, se usar domínio customizado)
+   - Ou use os subdomínios do Vercel: `*.vercel.app`
+
+2. **Variáveis de Ambiente no Vercel:**
+   ```
+   NEXT_PUBLIC_API_URL=https://api.nubbix.com
+   NODE_ENV=production
+   ```
+
+#### Backend (API)
+
+1. **Variáveis de Ambiente no Vercel (ou seu provedor de hosting):**
+   ```
+   BASE_DOMAIN=nubbix.com  # ou vercel.app se usar subdomínios do Vercel
+   CORS_ORIGIN=https://nubbix.com,https://*.nubbix.com  # Opcional
+   DATABASE_URL=postgresql://...
+   JWT_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----...
+   JWT_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----...
+   JWT_EXPIRES_IN=7d
+   NODE_ENV=production
+   PORT=3001
+   ```
+
+2. **CORS:**
+   - O CORS está configurado para aceitar automaticamente subdomínios do `BASE_DOMAIN`
+   - Exemplo: Se `BASE_DOMAIN=nubbix.com`, aceita `groups.nubbix.com`, `company.nubbix.com`, etc.
+
+#### Como Funciona
+
+- **Middleware do Next.js** extrai o `accountSlug` do subdomínio automaticamente
+- **Backend** gera URLs de email usando o formato: `https://{accountSlug}.{BASE_DOMAIN}/reset-password`
+- **CORS** valida dinamicamente subdomínios do domínio base configurado
+
+#### Exemplo de URLs
+
+- Login: `https://groups.nubbix.com/login`
+- Reset Password: `https://groups.nubbix.com/reset-password?token=...`
+- API: `https://api.nubbix.com/v1/auth/login`
 
 ## Docker
 

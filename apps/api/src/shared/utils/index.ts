@@ -1,1 +1,1 @@
-export * from "./passwordGenerator";
+export * from "./urlGenerator";

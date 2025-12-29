@@ -8,6 +8,7 @@ import {
 import { randomBytes } from "crypto";
 import { SendNotificationUseCase } from "../../../notifications/application/use-cases/SendNotificationUseCase";
 import { AccountRepository, Slug } from "../../../accounts/domain";
+import { generateAccountUrl } from "../../../../shared/utils";
 
 const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -51,8 +52,7 @@ export class ForgotPasswordUseCase extends BaseUseCase<ForgotPasswordInput, Forg
       user.resetPassword(token, TOKEN_EXPIRY_MS);
       await this.userRepository.save(user, tx);
 
-      const frontendUrl = process.env.FRONTEND_URL;
-      const resetUrl = `${frontendUrl}/${account.slug.value}/reset-password?token=${token}`;
+      const resetUrl = generateAccountUrl(account.slug.value, "/reset-password", { token });
 
       await this.sendNotificationUseCase.run({
         context: "forgot.password",

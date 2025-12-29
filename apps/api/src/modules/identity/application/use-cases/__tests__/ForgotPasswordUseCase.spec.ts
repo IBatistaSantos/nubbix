@@ -71,9 +71,9 @@ describe("ForgotPasswordUseCase", () => {
     const notificationCall = sendNotificationMock.mock.calls[0][0];
     expect(notificationCall.context).toBe("forgot.password");
     expect(notificationCall.to.email).toBe(email.toLowerCase());
-    expect(notificationCall.variables.url).toContain(
-      `/${account.slug.value}/reset-password?token=`
-    );
+    expect(notificationCall.variables.url).toContain(`${account.slug.value}`);
+    expect(notificationCall.variables.url).toContain(`reset-password`);
+    expect(notificationCall.variables.url).toContain(`token=`);
   });
 
   it("should return success message even when user does not exist", async () => {

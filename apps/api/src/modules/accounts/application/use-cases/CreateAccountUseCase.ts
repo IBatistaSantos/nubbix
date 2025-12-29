@@ -9,6 +9,7 @@ import {
 import { randomBytes } from "crypto";
 import { ConflictError } from "../../../../shared/errors";
 import { SendNotificationUseCase } from "../../../notifications/application/use-cases/SendNotificationUseCase";
+import { generateAccountUrl } from "../../../../shared/utils";
 
 export class CreateAccountUseCase extends BaseUseCase<CreateAccountInput, CreateAccountOutput> {
   constructor(
@@ -63,8 +64,7 @@ export class CreateAccountUseCase extends BaseUseCase<CreateAccountInput, Create
 
       await this.userRepository.save(user, tx);
 
-      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-      const onboardingUrl = `${frontendUrl}/onboarding?token=${token}`;
+      const onboardingUrl = generateAccountUrl(savedAccount.slug.value, "/onboarding", { token });
 
       await this.sendNotificationUseCase.run({
         context: "account.welcome",

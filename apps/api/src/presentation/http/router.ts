@@ -26,7 +26,14 @@ export function createRouter(): Hono {
           return origin;
         }
 
-        const allowedOrigins = process.env.CORS_ORIGIN?.split(",") || [];
+        const baseDomain = process.env.BASE_DOMAIN;
+        if (baseDomain) {
+          if (origin.endsWith(`.${baseDomain}`) || origin === `https://${baseDomain}` || origin === `http://${baseDomain}`) {
+            return origin;
+          }
+        }
+
+        const allowedOrigins = process.env.CORS_ORIGIN?.split(",").map((o) => o.trim()) || [];
         if (allowedOrigins.includes(origin)) {
           return origin;
         }
