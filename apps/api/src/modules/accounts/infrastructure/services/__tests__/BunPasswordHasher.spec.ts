@@ -72,4 +72,3 @@ describe("BunPasswordHasher", () => {
     expect(isValid).toBe(true);
   });
 });
-
