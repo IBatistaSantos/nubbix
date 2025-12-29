@@ -130,4 +130,3 @@ export async function seedPasswordResetTemplate(): Promise<void> {
   // eslint-disable-next-line no-console
   console.log("Template forgot.password criado com sucesso!");
 }
-
