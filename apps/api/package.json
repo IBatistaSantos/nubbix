@@ -14,7 +14,8 @@
     "db:generate": "bunx drizzle-kit generate",
     "db:migrate": "bunx drizzle-kit migrate",
     "db:push": "bunx drizzle-kit push",
-    "db:studio": "bunx drizzle-kit studio"
+    "db:studio": "bunx drizzle-kit studio",
+    "db:seed": "bun run src/shared/infrastructure/db/seeds/index.ts"
   },
   "dependencies": {
     "@nubbix/domain": "workspace:*",
