@@ -7,11 +7,13 @@ import { BunPasswordHasher } from "../../../accounts/infrastructure/services/Bun
 import { DrizzleTransactionManager } from "../../../../shared/infrastructure/transactions";
 import { db } from "../../../../shared/infrastructure/db";
 import { createSendNotificationUseCase } from "../../../notifications/infrastructure/di/SendNotificationUseCaseFactory";
+import { DrizzleAccountRepository } from "../../../accounts/infrastructure/repositories/DrizzleAccountRepository";
 
 let userRepository: DrizzleUserRepository | null = null;
 let jwtService: HonoJwtService | null = null;
 let passwordHasher: BunPasswordHasher | null = null;
 let transactionManager: DrizzleTransactionManager | null = null;
+let accountRepository: DrizzleAccountRepository | null = null;
 
 export function createLoginUseCase(): LoginUseCase {
   if (!userRepository) {
@@ -26,7 +28,11 @@ export function createLoginUseCase(): LoginUseCase {
     passwordHasher = new BunPasswordHasher();
   }
 
-  return new LoginUseCase(userRepository, passwordHasher, jwtService);
+  if (!accountRepository) {
+    accountRepository = new DrizzleAccountRepository();
+  }
+
+  return new LoginUseCase(userRepository, passwordHasher, jwtService, accountRepository);
 }
 
 export function createForgotPasswordUseCase(): ForgotPasswordUseCase {
@@ -38,9 +44,18 @@ export function createForgotPasswordUseCase(): ForgotPasswordUseCase {
     transactionManager = new DrizzleTransactionManager(db);
   }
 
+  if (!accountRepository) {
+    accountRepository = new DrizzleAccountRepository();
+  }
+
   const sendNotificationUseCase = createSendNotificationUseCase();
 
-  return new ForgotPasswordUseCase(userRepository, transactionManager, sendNotificationUseCase);
+  return new ForgotPasswordUseCase(
+    userRepository,
+    transactionManager,
+    sendNotificationUseCase,
+    accountRepository
+  );
 }
 
 export function createResetPasswordUseCase(): ResetPasswordUseCase {
@@ -56,5 +71,14 @@ export function createResetPasswordUseCase(): ResetPasswordUseCase {
     transactionManager = new DrizzleTransactionManager(db);
   }
 
-  return new ResetPasswordUseCase(userRepository, passwordHasher, transactionManager);
+  if (!accountRepository) {
+    accountRepository = new DrizzleAccountRepository();
+  }
+
+  return new ResetPasswordUseCase(
+    userRepository,
+    passwordHasher,
+    transactionManager,
+    accountRepository
+  );
 }

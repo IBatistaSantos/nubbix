@@ -1,15 +1,18 @@
-import { BaseUseCase, createZodValidator, Email } from "@nubbix/domain";
+import { BaseUseCase, createZodValidator, Email, ID } from "@nubbix/domain";
 import { UserRepository } from "../../domain";
 import { LoginInput, LoginOutput, loginSchema } from "../dtos/LoginDTO";
 import { PasswordHasher } from "../../../accounts/application/services/PasswordHasher";
 import { JwtService } from "../services/JwtService";
 import { InvalidCredentialsException } from "../../domain/exceptions/InvalidCredentialsException";
+import { AccountRepository, Slug } from "../../../accounts/domain";
+import { NotFoundError } from "../../../../shared/errors";
 
 export class LoginUseCase extends BaseUseCase<LoginInput, LoginOutput> {
   constructor(
     private userRepository: UserRepository,
     private passwordHasher: PasswordHasher,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private accountRepository: AccountRepository
   ) {
     super();
   }
@@ -20,8 +23,16 @@ export class LoginUseCase extends BaseUseCase<LoginInput, LoginOutput> {
   }
 
   protected async execute(input: LoginInput): Promise<LoginOutput> {
+    const accountSlug = Slug.create(input.accountSlug);
+    const account = await this.accountRepository.findBySlug(accountSlug);
+
+    if (!account) {
+      throw new NotFoundError("Account not found");
+    }
+
     const email = Email.create(input.email);
-    const user = await this.userRepository.findByEmail(email);
+    const accountId = account.id;
+    const user = await this.userRepository.findByEmailAndAccountId(email, accountId);
 
     if (!user) {
       throw new InvalidCredentialsException();

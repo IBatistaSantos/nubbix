@@ -2,26 +2,67 @@
 @import "../../../packages/ui/src/styles/globals.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Brand Colors */
+  --brand-primary: 250 84% 58%; /* #4F46E5 */
+  --brand-primary-hover: 250 75% 52%; /* #4338CA */
+  
+  /* Semantic Colors */
+  --color-background: 0 0% 100%; /* #FFFFFF */
+  --color-foreground: 222 47% 11%; /* #111827 */
+  --color-surface: 0 0% 100%; /* #FFFFFF */
+  
+  /* Text Colors */
+  --color-text-primary: 222 47% 11%; /* #111827 */
+  --color-text-secondary: 215 16% 47%; /* #6B7280 */
+  --color-text-muted: 215 13% 65%; /* #9CA3AF */
+  --color-text-label: 215 25% 27%; /* #374151 */
+  
+  /* Border Colors */
+  --color-border: 220 13% 91%; /* #E5E7EB */
+  --color-border-focus: 250 84% 58%; /* #4F46E5 */
+  
+  /* State Colors */
+  --color-error: 0 84% 60%;
+  --color-error-bg: 0 93% 94%;
+  --color-error-border: 0 84% 60%;
+  
+  /* Promo Panel Colors */
+  --color-promo-bg: 250 84% 58%; /* #4F46E5 */
+  --color-promo-surface: 222 47% 11%; /* #1F2937 */
+  
+  /* Spacing Scale */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Typography */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme inline {
+  --color-brand-primary: hsl(var(--brand-primary));
+  --color-brand-primary-hover: hsl(var(--brand-primary-hover));
+  --color-text-primary: hsl(var(--color-text-primary));
+  --color-text-secondary: hsl(var(--color-text-secondary));
+  --color-text-muted: hsl(var(--color-text-muted));
+  --color-text-label: hsl(var(--color-text-label));
+  --color-border: hsl(var(--color-border));
+  --color-border-focus: hsl(var(--color-border-focus));
+  --color-error: hsl(var(--color-error));
+  --color-error-bg: hsl(var(--color-error-bg));
+  --color-error-border: hsl(var(--color-error-border));
+  --color-promo-bg: hsl(var(--color-promo-bg));
+  --color-promo-surface: hsl(var(--color-promo-surface));
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: hsl(var(--color-background));
+  color: hsl(var(--color-foreground));
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }

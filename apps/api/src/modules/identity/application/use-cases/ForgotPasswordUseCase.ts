@@ -7,6 +7,8 @@ import {
 } from "../dtos/ForgotPasswordDTO";
 import { randomBytes } from "crypto";
 import { SendNotificationUseCase } from "../../../notifications/application/use-cases/SendNotificationUseCase";
+import { AccountRepository, Slug } from "../../../accounts/domain";
+import { NotFoundError } from "../../../../shared/errors";
 
 const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -14,7 +16,8 @@ export class ForgotPasswordUseCase extends BaseUseCase<ForgotPasswordInput, Forg
   constructor(
     private userRepository: UserRepository,
     private transactionManager: TransactionManager,
-    private sendNotificationUseCase: SendNotificationUseCase
+    private sendNotificationUseCase: SendNotificationUseCase,
+    private accountRepository: AccountRepository
   ) {
     super();
   }
@@ -25,8 +28,19 @@ export class ForgotPasswordUseCase extends BaseUseCase<ForgotPasswordInput, Forg
   }
 
   protected async execute(input: ForgotPasswordInput): Promise<ForgotPasswordOutput> {
+    // Buscar Account pelo slug
+    const accountSlug = Slug.create(input.accountSlug);
+    const account = await this.accountRepository.findBySlug(accountSlug);
+
+    if (!account) {
+      // Always return success for security reasons (prevent user enumeration)
+      return {
+        message: "If the email exists, a password reset link has been sent",
+      };
+    }
+
     const email = Email.create(input.email);
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmailAndAccountId(email, account.id);
 
     // Always return success for security reasons (prevent user enumeration)
     if (!user) {
@@ -42,7 +56,7 @@ export class ForgotPasswordUseCase extends BaseUseCase<ForgotPasswordInput, Forg
       await this.userRepository.save(user, tx);
 
       const frontendUrl = process.env.FRONTEND_URL;
-      const resetUrl = `${frontendUrl}/reset-password?token=${token}`;
+      const resetUrl = `${frontendUrl}/${account.slug.value}/reset-password?token=${token}`;
 
       await this.sendNotificationUseCase.run({
         context: "forgot.password",

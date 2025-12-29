@@ -6,6 +6,7 @@ export const loginController: HttpHandler = async (request) => {
   const input = request.body as LoginInput;
   const useCase = createLoginUseCase();
   const output = await useCase.run(input);
+
   return {
     status: 200,
     data: output,

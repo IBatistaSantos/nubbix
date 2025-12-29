@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { errorHandler } from "../../infrastructure/http/middleware/errorHandler";
 import { ModuleRegistry } from "../../shared/presentation/http/core/ModuleRegistry";
 import { registerHonoRoutes } from "../../infrastructure/http/adapters/hono/HonoRouteAdapter";
@@ -14,6 +15,29 @@ moduleRegistry.register("auth", authRoutes);
 
 export function createRouter(): Hono {
   const app = new Hono();
+
+  app.use(
+    "*",
+    cors({
+      origin: (origin) => {
+        if (!origin) return origin;
+
+        if (origin.includes("localhost:3000")) {
+          return origin;
+        }
+
+        const allowedOrigins = process.env.CORS_ORIGIN?.split(",") || [];
+        if (allowedOrigins.includes(origin)) {
+          return origin;
+        }
+
+        return null;
+      },
+      allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowHeaders: ["Content-Type", "Authorization"],
+      credentials: true,
+    })
+  );
 
   app.onError(errorHandler);
 
