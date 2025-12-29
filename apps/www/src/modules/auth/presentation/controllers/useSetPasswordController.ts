@@ -9,7 +9,7 @@ import { useSetPasswordMutation } from "../mutations/authMutations";
 import { setPasswordSchema, type SetPasswordInput } from "../../application/dtos/SetPasswordDTO";
 import { useEffect } from "react";
 
-export function useSetPasswordController() {
+export function useSetPasswordController(accountSlug: string) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setPasswordMutation = useSetPasswordMutation();
@@ -46,14 +46,12 @@ export function useSetPasswordController() {
         confirmPassword: data.confirmPassword,
       });
 
-      const accountSlug = window.location.pathname.match(/^\/accounts\/([a-zA-Z0-9_-]+)/)?.[1];
-      if (!accountSlug) {
-        throw new Error("Account slug não encontrado");
-      }
-
       await loginMutation.mutateAsync({
-        email: setPasswordResult.email,
-        password: data.password,
+        input: {
+          email: setPasswordResult.email,
+          password: data.password,
+        },
+        accountSlug,
       });
 
       router.push(`/accounts/${accountSlug}`);

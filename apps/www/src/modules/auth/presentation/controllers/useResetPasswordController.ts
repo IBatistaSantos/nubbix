@@ -7,7 +7,7 @@ import { useResetPasswordMutation } from "../mutations/authMutations";
 import { resetPasswordSchema, type ResetPasswordInput } from "../../application/dtos";
 import { useEffect } from "react";
 
-export function useResetPasswordController() {
+export function useResetPasswordController(accountSlug: string) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const resetPasswordMutation = useResetPasswordMutation();
@@ -38,16 +38,14 @@ export function useResetPasswordController() {
 
     try {
       await resetPasswordMutation.mutateAsync({
-        token: data.token,
-        password: data.password,
-        confirmPassword: data.confirmPassword,
+        input: {
+          token: data.token,
+          password: data.password,
+          confirmPassword: data.confirmPassword,
+        },
+        accountSlug,
       });
-      const accountSlug = window.location.pathname.match(/^\/accounts\/([a-zA-Z0-9_-]+)/)?.[1];
-      if (accountSlug) {
-        router.push(`/accounts/${accountSlug}/login?reset=success`);
-      } else {
-        router.push("/");
-      }
+      router.push(`/accounts/${accountSlug}/login?reset=success`);
     } catch (error) {
       console.error("Reset password error:", error);
     }

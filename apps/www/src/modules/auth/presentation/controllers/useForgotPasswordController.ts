@@ -6,7 +6,7 @@ import { useForgotPasswordMutation } from "../mutations/authMutations";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "../../application/dtos";
 import { useState } from "react";
 
-export function useForgotPasswordController() {
+export function useForgotPasswordController(accountSlug: string) {
   const [isSuccess, setIsSuccess] = useState(false);
   const forgotPasswordMutation = useForgotPasswordMutation();
 
@@ -20,7 +20,7 @@ export function useForgotPasswordController() {
 
   const handleSubmit = form.handleSubmit(async (data) => {
     try {
-      await forgotPasswordMutation.mutateAsync(data);
+      await forgotPasswordMutation.mutateAsync({ input: data, accountSlug });
       setIsSuccess(true);
     } catch (error) {
       console.error("Forgot password error:", error);

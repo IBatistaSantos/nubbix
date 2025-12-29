@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useLoginMutation } from "../mutations/authMutations";
 import { loginSchema, type LoginInput } from "../../application/dtos";
 
-export function useLoginController() {
+export function useLoginController(accountSlug: string) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const loginMutation = useLoginMutation();
@@ -22,14 +22,9 @@ export function useLoginController() {
 
   const handleSubmit = form.handleSubmit(async (data) => {
     try {
-      await loginMutation.mutateAsync(data);
-      const accountSlug = window.location.pathname.match(/^\/accounts\/([a-zA-Z0-9_-]+)/)?.[1];
-      if (accountSlug) {
-        const redirectTo = searchParams.get("redirect") || `/accounts/${accountSlug}`;
-        router.push(redirectTo);
-      } else {
-        router.push("/");
-      }
+      await loginMutation.mutateAsync({ input: data, accountSlug });
+      const redirectTo = searchParams.get("redirect") || `/accounts/${accountSlug}`;
+      router.push(redirectTo);
     } catch (error) {
       console.error("Login error:", error);
     }
