@@ -4,11 +4,13 @@ import { ModuleRegistry } from "../../shared/presentation/http/core/ModuleRegist
 import { registerHonoRoutes } from "../../infrastructure/http/adapters/hono/HonoRouteAdapter";
 import { accountRoutes } from "../../modules/accounts/presentation/routes/accountRoutes";
 import { templateRoutes } from "../../modules/notifications/presentation/routes/templateRoutes";
+import { authRoutes } from "../../modules/identity/presentation/routes/authRoutes";
 
 const moduleRegistry = new ModuleRegistry();
 
 moduleRegistry.register("accounts", accountRoutes);
 moduleRegistry.register("templates", templateRoutes);
+moduleRegistry.register("auth", authRoutes);
 
 export function createRouter(): Hono {
   const app = new Hono();

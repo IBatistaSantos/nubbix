@@ -1,10 +1,12 @@
 import { seedAccountWelcomeTemplate } from "./accountWelcomeTemplate";
+import { seedPasswordResetTemplate } from "./passwordResetTemplate";
 
 export async function runSeeds(): Promise<void> {
   // eslint-disable-next-line no-console
   console.log("Iniciando seeds...");
 
   await seedAccountWelcomeTemplate();
+  await seedPasswordResetTemplate();
 
   // eslint-disable-next-line no-console
   console.log("Seeds concluídos!");
