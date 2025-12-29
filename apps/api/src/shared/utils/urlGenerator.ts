@@ -5,15 +5,14 @@ export function generateAccountUrl(
 ): string {
   const baseDomain = process.env.BASE_DOMAIN || "localhost:3000";
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-  
+
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  
+
   let queryString = "";
   if (queryParams && Object.keys(queryParams).length > 0) {
     const params = new URLSearchParams(queryParams);
     queryString = `?${params.toString()}`;
   }
-  
+
   return `${protocol}://${accountSlug}.${baseDomain}${normalizedPath}${queryString}`;
 }
-
