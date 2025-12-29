@@ -476,7 +476,7 @@ export class Event extends BaseEntity {
       ),
       dates: [
         EventDate.create({
-          id: `date_${ID.create().value}`,
+          id: ID.create(),
           date: faker.date.future().toISOString().split("T")[0],
           startTime: "10:00",
           endTime: "12:00",
