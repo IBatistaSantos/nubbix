@@ -42,7 +42,12 @@ export function useResetPasswordController() {
         password: data.password,
         confirmPassword: data.confirmPassword,
       });
-      router.push("/login?reset=success");
+      const accountSlug = window.location.pathname.match(/^\/accounts\/([a-zA-Z0-9_-]+)/)?.[1];
+      if (accountSlug) {
+        router.push(`/accounts/${accountSlug}/login?reset=success`);
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Reset password error:", error);
     }

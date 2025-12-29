@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import { useParams } from "next/navigation";
 import { useLoginController } from "@/modules/auth/presentation/controllers/useLoginController";
 import {
   Logo,
@@ -13,6 +14,8 @@ import {
 } from "@/modules/auth/presentation/components";
 
 function LoginForm() {
+  const params = useParams();
+  const slug = params.slug as string;
   const { register, handleSubmit, errors, isLoading, error } = useLoginController();
 
   return (
@@ -29,12 +32,7 @@ function LoginForm() {
       />
 
       <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
-        <EmailField
-          id="email"
-          label="E-mail"
-          error={errors.email?.message}
-          register={register("email")}
-        />
+        <EmailField id="email" label="E-mail" error={errors.email?.message} register={register("email")} />
 
         <PasswordField
           id="password"
@@ -44,7 +42,7 @@ function LoginForm() {
         />
 
         <div className="flex items-center justify-end pt-1">
-          <AuthLink href="/forgot-password">Esqueceu a senha?</AuthLink>
+          <AuthLink href={`/accounts/${slug}/forgot-password`}>Esqueceu a senha?</AuthLink>
         </div>
 
         <AuthButton isLoading={isLoading} className="mt-2">
@@ -69,3 +67,4 @@ export default function LoginPage() {
     </Suspense>
   );
 }
+

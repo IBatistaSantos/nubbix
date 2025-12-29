@@ -13,10 +13,12 @@ import {
 import { AlertCircle } from "lucide-react";
 import { Suspense } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 function ResetPasswordForm() {
-  const { register, handleSubmit, errors, isLoading, error, hasToken, watch } =
-    useResetPasswordController();
+  const params = useParams();
+  const slug = params.slug as string;
+  const { register, handleSubmit, errors, isLoading, error, hasToken, watch } = useResetPasswordController();
 
   const passwordValue = watch("password") || "";
 
@@ -33,7 +35,7 @@ function ResetPasswordForm() {
           <p className="text-text-secondary text-sm mb-6">
             O link de redefinição de senha é inválido ou expirou. Por favor, solicite um novo link.
           </p>
-          <Link href="/forgot-password">
+          <Link href={`/accounts/${slug}/forgot-password`}>
             <AuthButton>Solicitar novo link</AuthButton>
           </Link>
         </div>
@@ -76,7 +78,7 @@ function ResetPasswordForm() {
       </form>
 
       <div className="mt-6 text-center">
-        <AuthLink href="/login">Voltar para o login</AuthLink>
+        <AuthLink href={`/accounts/${slug}/login`}>Voltar para o login</AuthLink>
       </div>
     </div>
   );
@@ -96,3 +98,4 @@ export default function ResetPasswordPage() {
     </Suspense>
   );
 }
+

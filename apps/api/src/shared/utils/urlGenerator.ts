@@ -7,6 +7,7 @@ export function generateAccountUrl(
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
 
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const accountPath = `/accounts/${accountSlug}${normalizedPath}`;
 
   let queryString = "";
   if (queryParams && Object.keys(queryParams).length > 0) {
@@ -14,5 +15,5 @@ export function generateAccountUrl(
     queryString = `?${params.toString()}`;
   }
 
-  return `${protocol}://${accountSlug}.${baseDomain}${normalizedPath}${queryString}`;
+  return `${protocol}://${baseDomain}${accountPath}${queryString}`;
 }

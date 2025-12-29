@@ -53,5 +53,11 @@ export const errorHandler: ErrorHandler = (error: Error, c: Context): Response =
 
   // eslint-disable-next-line no-console
   console.error("Unhandled error:", error);
+  // eslint-disable-next-line no-console
+  console.error("Error stack:", error.stack);
+  // eslint-disable-next-line no-console
+  console.error("Error name:", error.name);
+  // eslint-disable-next-line no-console
+  console.error("Error message:", error.message);
   return errorResponse(c, "Internal server error", 500);
 };

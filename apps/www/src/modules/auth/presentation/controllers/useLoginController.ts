@@ -23,8 +23,13 @@ export function useLoginController() {
   const handleSubmit = form.handleSubmit(async (data) => {
     try {
       await loginMutation.mutateAsync(data);
-      const redirectTo = searchParams.get("redirect") || "/";
-      router.push(redirectTo);
+      const accountSlug = window.location.pathname.match(/^\/accounts\/([a-zA-Z0-9_-]+)/)?.[1];
+      if (accountSlug) {
+        const redirectTo = searchParams.get("redirect") || `/accounts/${accountSlug}`;
+        router.push(redirectTo);
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Login error:", error);
     }
