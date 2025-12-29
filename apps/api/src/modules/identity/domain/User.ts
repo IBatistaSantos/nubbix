@@ -215,6 +215,7 @@ export class User extends BaseEntity {
       ...super.toJSON(),
       name: this._name,
       email: this._email.value,
+      password: this._password,
       avatar: this._avatar,
       accountId: this._accountId,
       role: this._role.value,
