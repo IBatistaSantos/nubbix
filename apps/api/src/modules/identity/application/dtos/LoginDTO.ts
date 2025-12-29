@@ -18,4 +18,3 @@ export interface LoginOutput {
     avatar: string | null;
   };
 }
-

@@ -139,4 +139,3 @@ describe("LoginUseCase", () => {
     expect(output.user.role).toBe(RoleValue.ADMIN);
   });
 });
-

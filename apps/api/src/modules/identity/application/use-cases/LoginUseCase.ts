@@ -31,10 +31,7 @@ export class LoginUseCase extends BaseUseCase<LoginInput, LoginOutput> {
       throw new InvalidCredentialsException();
     }
 
-    const isPasswordValid = await this.passwordHasher.verify(
-      input.password,
-      user.password
-    );
+    const isPasswordValid = await this.passwordHasher.verify(input.password, user.password);
 
     if (!isPasswordValid) {
       throw new InvalidCredentialsException();
@@ -53,4 +50,3 @@ export class LoginUseCase extends BaseUseCase<LoginInput, LoginOutput> {
     };
   }
 }
-

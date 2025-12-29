@@ -11,4 +11,3 @@ export const loginController: HttpHandler = async (request) => {
     data: output,
   };
 };
-
