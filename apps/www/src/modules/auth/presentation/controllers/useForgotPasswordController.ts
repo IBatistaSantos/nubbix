@@ -11,6 +11,7 @@ export function useForgotPasswordController() {
   const forgotPasswordMutation = useForgotPasswordMutation();
 
   const form = useForm<ForgotPasswordInput>({
+    // @ts-expect-error - Zod schema type inference
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",

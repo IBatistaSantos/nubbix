@@ -1,5 +1,6 @@
 import { Input } from "@nubbix/ui/input";
 import { Label } from "@nubbix/ui/label";
+import { UseFormRegisterReturn } from "react-hook-form";
 import { ReactNode } from "react";
 
 interface FormFieldProps {
@@ -34,7 +35,7 @@ interface InputWithIconProps {
   icon: ReactNode;
   rightIcon?: ReactNode;
   error?: string;
-  register: any;
+  register: UseFormRegisterReturn<string>;
   className?: string;
   autoComplete?: string;
 }

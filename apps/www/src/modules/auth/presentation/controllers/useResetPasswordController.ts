@@ -5,25 +5,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useResetPasswordMutation } from "../mutations/authMutations";
 import { resetPasswordSchema, type ResetPasswordInput } from "../../application/dtos";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 export function useResetPasswordController() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const resetPasswordMutation = useResetPasswordMutation();
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const tokenParam = searchParams.get("token");
-    if (tokenParam) {
-      setToken(tokenParam);
-    }
-  }, [searchParams]);
+  const tokenParam = searchParams.get("token");
+  const token = tokenParam || null;
 
   const form = useForm<ResetPasswordInput>({
+    // @ts-expect-error - Zod schema type inference
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      token: "",
+      token: token || "",
       password: "",
       confirmPassword: "",
     },
@@ -45,6 +40,7 @@ export function useResetPasswordController() {
       await resetPasswordMutation.mutateAsync({
         token: data.token,
         password: data.password,
+        confirmPassword: data.confirmPassword,
       });
       router.push("/login?reset=success");
     } catch (error) {

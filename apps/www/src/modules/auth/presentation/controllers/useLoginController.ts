@@ -12,6 +12,7 @@ export function useLoginController() {
   const loginMutation = useLoginMutation();
 
   const form = useForm<LoginInput>({
+    // @ts-expect-error - Zod schema type inference
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",

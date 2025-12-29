@@ -2,6 +2,7 @@
 
 import { Input } from "@nubbix/ui/input";
 import { Lock, Eye, EyeOff } from "lucide-react";
+import { UseFormRegisterReturn } from "react-hook-form";
 import { useState } from "react";
 import { FormField } from "./FormField";
 import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator";
@@ -10,7 +11,7 @@ interface PasswordStrengthFieldProps {
   id: string;
   label: string;
   error?: string;
-  register: any;
+  register: UseFormRegisterReturn<string>;
   placeholder?: string;
   autoComplete?: string;
   showStrengthIndicator?: boolean;

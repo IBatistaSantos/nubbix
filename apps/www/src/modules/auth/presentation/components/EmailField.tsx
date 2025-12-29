@@ -1,12 +1,13 @@
 import { Input } from "@nubbix/ui/input";
 import { Mail } from "lucide-react";
+import { UseFormRegisterReturn } from "react-hook-form";
 import { FormField } from "./FormField";
 
 interface EmailFieldProps {
   id: string;
   label: string;
   error?: string;
-  register: any;
+  register: UseFormRegisterReturn<string>;
   placeholder?: string;
   autoComplete?: string;
 }
