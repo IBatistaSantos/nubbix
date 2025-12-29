@@ -16,7 +16,8 @@ import {
 function LoginForm() {
   const params = useParams();
   const slug = params.slug as string;
-  const { register, handleSubmit, errors, isLoading, error } = useLoginController();
+
+  const { register, handleSubmit, errors, isLoading, error } = useLoginController(slug);
 
   return (
     <div className="w-full max-w-md mx-auto">

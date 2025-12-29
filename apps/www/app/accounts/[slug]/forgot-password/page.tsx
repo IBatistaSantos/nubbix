@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
   const params = useParams();
   const slug = params.slug as string;
   const { register, handleSubmit, errors, isLoading, error, isSuccess } =
-    useForgotPasswordController();
+    useForgotPasswordController(slug);
 
   if (isSuccess) {
     return (

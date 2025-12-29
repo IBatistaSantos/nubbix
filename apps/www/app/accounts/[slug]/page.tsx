@@ -8,7 +8,7 @@ export default function AccountPage() {
   const router = useRouter();
   const params = useParams();
   const slug = params.slug as string;
-  const { user, logout, isLoading } = useAuthController();
+  const { user, logout, isLoading } = useAuthController(slug);
 
   useEffect(() => {
     if (!isLoading && !user) {

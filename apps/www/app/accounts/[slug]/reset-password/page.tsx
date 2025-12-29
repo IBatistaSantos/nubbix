@@ -3,13 +3,13 @@
 import { useResetPasswordController } from "@/modules/auth/presentation/controllers/useResetPasswordController";
 import {
   Logo,
-  PasswordStrengthField,
   PasswordField,
   ErrorMessage,
   AuthButton,
   AuthLink,
   AuthHeader,
 } from "@/modules/auth/presentation/components";
+import { PasswordStrengthField } from "@/modules/auth/presentation/components/PasswordStrengthField";
 import { AlertCircle } from "lucide-react";
 import { Suspense } from "react";
 import Link from "next/link";
@@ -19,7 +19,7 @@ function ResetPasswordForm() {
   const params = useParams();
   const slug = params.slug as string;
   const { register, handleSubmit, errors, isLoading, error, hasToken, watch } =
-    useResetPasswordController();
+    useResetPasswordController(slug);
 
   const passwordValue = watch("password") || "";
 
