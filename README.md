@@ -333,6 +333,7 @@ O projeto suporta subdomínios dinâmicos para multi-tenancy (ex: `slug.nubbix.c
 #### Backend (API)
 
 1. **Variáveis de Ambiente no Vercel (ou seu provedor de hosting):**
+
    ```
    BASE_DOMAIN=nubbix.com  # ou vercel.app se usar subdomínios do Vercel
    CORS_ORIGIN=https://nubbix.com,https://*.nubbix.com  # Opcional
