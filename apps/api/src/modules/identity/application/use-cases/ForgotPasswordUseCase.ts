@@ -8,7 +8,6 @@ import {
 import { randomBytes } from "crypto";
 import { SendNotificationUseCase } from "../../../notifications/application/use-cases/SendNotificationUseCase";
 import { AccountRepository, Slug } from "../../../accounts/domain";
-import { NotFoundError } from "../../../../shared/errors";
 
 const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -28,12 +27,10 @@ export class ForgotPasswordUseCase extends BaseUseCase<ForgotPasswordInput, Forg
   }
 
   protected async execute(input: ForgotPasswordInput): Promise<ForgotPasswordOutput> {
-    // Buscar Account pelo slug
     const accountSlug = Slug.create(input.accountSlug);
     const account = await this.accountRepository.findBySlug(accountSlug);
 
     if (!account) {
-      // Always return success for security reasons (prevent user enumeration)
       return {
         message: "If the email exists, a password reset link has been sent",
       };
@@ -42,7 +39,6 @@ export class ForgotPasswordUseCase extends BaseUseCase<ForgotPasswordInput, Forg
     const email = Email.create(input.email);
     const user = await this.userRepository.findByEmailAndAccountId(email, account.id);
 
-    // Always return success for security reasons (prevent user enumeration)
     if (!user) {
       return {
         message: "If the email exists, a password reset link has been sent",

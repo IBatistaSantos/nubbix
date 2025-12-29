@@ -21,7 +21,7 @@ describe("LoginUseCase", () => {
   beforeEach(() => {
     userRepository = new InMemoryUserRepository();
     accountRepository = new InMemoryAccountRepository();
-    passwordHasherMock = mock(async (password: string, hash: string) => {
+    passwordHasherMock = mock(async (password: string, _hash: string) => {
       return password === "correctPassword";
     });
     passwordHasher = {
@@ -29,7 +29,7 @@ describe("LoginUseCase", () => {
       verify: passwordHasherMock,
     } as any;
 
-    jwtServiceMock = mock(async (payload: any) => {
+    jwtServiceMock = mock(async (_payload: any) => {
       return "mock-jwt-token";
     });
     jwtService = {

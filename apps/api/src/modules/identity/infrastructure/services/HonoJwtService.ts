@@ -33,7 +33,7 @@ export class HonoJwtService implements JwtService {
     try {
       const payload = await verify(token, this.publicKey, "RS256");
       return payload as JwtPayload;
-    } catch (error) {
+    } catch {
       throw new Error("Invalid or expired token");
     }
   }

@@ -1,4 +1,4 @@
-import { BaseUseCase, createZodValidator, Email, ID } from "@nubbix/domain";
+import { BaseUseCase, createZodValidator, Email } from "@nubbix/domain";
 import { UserRepository } from "../../domain";
 import { LoginInput, LoginOutput, loginSchema } from "../dtos/LoginDTO";
 import { PasswordHasher } from "../../../accounts/application/services/PasswordHasher";

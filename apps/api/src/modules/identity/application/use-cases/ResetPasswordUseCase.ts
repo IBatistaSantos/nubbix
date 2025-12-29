@@ -26,7 +26,6 @@ export class ResetPasswordUseCase extends BaseUseCase<ResetPasswordInput, ResetP
   }
 
   protected async execute(input: ResetPasswordInput): Promise<ResetPasswordOutput> {
-    // Buscar Account pelo slug
     const accountSlug = Slug.create(input.accountSlug);
     const account = await this.accountRepository.findBySlug(accountSlug);
 
@@ -40,7 +39,6 @@ export class ResetPasswordUseCase extends BaseUseCase<ResetPasswordInput, ResetP
       throw new NotFoundError("Invalid or expired token");
     }
 
-    // Validar que o usuário pertence à account correta
     if (user.accountId !== account.id.value) {
       throw new NotFoundError("Invalid or expired token");
     }
