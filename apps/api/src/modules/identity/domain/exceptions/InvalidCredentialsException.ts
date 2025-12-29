@@ -6,4 +6,3 @@ export class InvalidCredentialsException extends BadRequestError {
     this.name = "InvalidCredentialsException";
   }
 }
-
