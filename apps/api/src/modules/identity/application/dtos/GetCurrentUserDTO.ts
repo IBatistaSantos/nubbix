@@ -6,4 +6,3 @@ export interface GetCurrentUserOutput {
   role: string;
   avatar: string | null;
 }
-
