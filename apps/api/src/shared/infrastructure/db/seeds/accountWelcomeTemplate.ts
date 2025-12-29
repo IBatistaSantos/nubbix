@@ -1,6 +1,8 @@
+import { ID, Status } from "@nubbix/domain/index";
 import { db } from "../client";
 import { templates } from "../schema";
 import { eq, and, isNull } from "drizzle-orm";
+import { Channel } from "../../../../modules/notifications/domain";
 
 const LOGO_URL = "https://s3.us-east-1.amazonaws.com/files.evnts.com.br/uploads/logo.svg";
 
@@ -102,26 +104,26 @@ export async function seedAccountWelcomeTemplate(): Promise<void> {
     .limit(1);
 
   if (existingTemplate.length > 0) {
+    // eslint-disable-next-line no-console
     console.log("Template account.welcome já existe, pulando seed.");
     return;
   }
 
-  const templateId = crypto.randomUUID();
-
   await db.insert(templates).values({
-    id: templateId,
-    channel: "email",
+    id: ID.create().value,
+    channel: Channel.email().value,
     subject: "Bem-vindo ao Nubbix, {{name}}!",
     body: emailTemplate,
     context: "account.welcome",
     language: "pt-BR",
     accountId: null,
     isDefault: true,
-    status: "active",
+    status: Status.active().value,
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
   });
 
+  // eslint-disable-next-line no-console
   console.log("Template account.welcome criado com sucesso!");
 }
