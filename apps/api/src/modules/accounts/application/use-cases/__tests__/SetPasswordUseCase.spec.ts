@@ -190,4 +190,3 @@ describe("SetPasswordUseCase", () => {
     expect(updatedUser!.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
   });
 });
-

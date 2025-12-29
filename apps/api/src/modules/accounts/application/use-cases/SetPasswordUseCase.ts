@@ -1,10 +1,6 @@
 import { BaseUseCase, createZodValidator, TransactionManager } from "@nubbix/domain";
 import { UserRepository } from "../../../identity/domain";
-import {
-  SetPasswordInput,
-  SetPasswordOutput,
-  setPasswordSchema,
-} from "../dtos/SetPasswordDTO";
+import { SetPasswordInput, SetPasswordOutput, setPasswordSchema } from "../dtos/SetPasswordDTO";
 import { PasswordHasher } from "../services/PasswordHasher";
 import { NotFoundError } from "../../../../shared/errors";
 import { InvalidResetTokenException } from "../../../identity/domain/exceptions/InvalidResetTokenException";
@@ -52,4 +48,3 @@ export class SetPasswordUseCase extends BaseUseCase<SetPasswordInput, SetPasswor
     });
   }
 }
-
