@@ -156,4 +156,25 @@ describe("HonoJwtService", () => {
     expect(verified.accountId).toBe(payload.accountId);
     expect(verified.role).toBe(payload.role);
   });
+
+  it("should normalize keys with quotes and \\n literals", async () => {
+    const payload = {
+      userId: "user-123",
+      email: "test@example.com",
+      accountId: "account-456",
+      role: "USER",
+    };
+
+    process.env.JWT_PRIVATE_KEY = `"${privateKey.replace(/\n/g, "\\n")}"`;
+    process.env.JWT_PUBLIC_KEY = `"${publicKey.replace(/\n/g, "\\n")}"`;
+
+    const jwtService = new HonoJwtService();
+    const token = await jwtService.sign(payload);
+    const verified = await jwtService.verify(token);
+
+    expect(verified.userId).toBe(payload.userId);
+    expect(verified.email).toBe(payload.email);
+    expect(verified.accountId).toBe(payload.accountId);
+    expect(verified.role).toBe(payload.role);
+  });
 });
