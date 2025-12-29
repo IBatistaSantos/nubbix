@@ -1,6 +1,7 @@
 import { LoginUseCase } from "../../application/use-cases/LoginUseCase";
 import { ForgotPasswordUseCase } from "../../application/use-cases/ForgotPasswordUseCase";
 import { ResetPasswordUseCase } from "../../application/use-cases/ResetPasswordUseCase";
+import { GetCurrentUserUseCase } from "../../application/use-cases/GetCurrentUserUseCase";
 import { DrizzleUserRepository } from "../repositories/DrizzleUserRepository";
 import { HonoJwtService } from "../services/HonoJwtService";
 import { BunPasswordHasher } from "../../../accounts/infrastructure/services/BunPasswordHasher";
@@ -81,4 +82,12 @@ export function createResetPasswordUseCase(): ResetPasswordUseCase {
     transactionManager,
     accountRepository
   );
+}
+
+export function createGetCurrentUserUseCase(): GetCurrentUserUseCase {
+  if (!userRepository) {
+    userRepository = new DrizzleUserRepository();
+  }
+
+  return new GetCurrentUserUseCase(userRepository);
 }

@@ -2,6 +2,8 @@ import { RouteDefinition, ModuleRoutes } from "../../../../shared/presentation/h
 import { loginController } from "../controllers/LoginController";
 import { forgotPasswordController } from "../controllers/ForgotPasswordController";
 import { resetPasswordController } from "../controllers/ResetPasswordController";
+import { getCurrentUserController } from "../controllers/GetCurrentUserController";
+import { authMiddleware } from "../../../../infrastructure/http/middleware/authMiddleware";
 
 export class AuthRoutes implements ModuleRoutes {
   getRoutes(): RouteDefinition[] {
@@ -20,6 +22,12 @@ export class AuthRoutes implements ModuleRoutes {
         method: "POST",
         path: "/auth/reset-password",
         handler: resetPasswordController,
+      },
+      {
+        method: "GET",
+        path: "/auth/me",
+        handler: getCurrentUserController,
+        middleware: [authMiddleware()],
       },
     ];
   }

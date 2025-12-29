@@ -6,6 +6,11 @@ import { adaptHonoResponse } from "./HonoResponseAdapter";
 
 export function registerHonoRoute(app: Hono, route: RouteDefinition): void {
   const handler = createHonoHandler(route.handler);
+  const middlewares = route.middleware || [];
+
+  if (middlewares.length > 0) {
+    app.use(route.path, ...middlewares);
+  }
 
   switch (route.method) {
     case "GET":

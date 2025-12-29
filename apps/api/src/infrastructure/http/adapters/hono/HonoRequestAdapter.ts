@@ -1,7 +1,7 @@
 import { Context } from "hono";
 import { HttpRequest } from "../../../../shared/presentation/http/interfaces/HttpRequest";
 
-export async function adaptHonoRequest(c: Context): Promise<HttpRequest> {
+export async function adaptHonoRequest(c: Context): Promise<HttpRequest & { context: Context }> {
   let body: unknown = {};
 
   try {
@@ -25,5 +25,6 @@ export async function adaptHonoRequest(c: Context): Promise<HttpRequest> {
     query: c.req.query() as Record<string, string>,
     params: c.req.param() as Record<string, string>,
     headers,
+    context: c,
   };
 }
