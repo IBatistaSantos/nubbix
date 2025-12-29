@@ -28,11 +28,7 @@ export function createRouter(): Hono {
 
         const baseDomain = process.env.BASE_DOMAIN;
         if (baseDomain) {
-          if (
-            origin.endsWith(`.${baseDomain}`) ||
-            origin === `https://${baseDomain}` ||
-            origin === `http://${baseDomain}`
-          ) {
+          if (origin === `https://${baseDomain}`) {
             return origin;
           }
         }
