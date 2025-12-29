@@ -198,4 +198,3 @@ describe("SetPasswordController Integration", () => {
     ).rejects.toThrow();
   });
 });
-

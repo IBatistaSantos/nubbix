@@ -73,7 +73,7 @@ describe("CreateAccountController Integration", () => {
     const tester = createAccountTester();
     const sharedEmail = "shared@example.com";
 
-    const firstInput = createAccountInput({ 
+    const firstInput = createAccountInput({
       responsibleEmail: sharedEmail,
       slug: "first-account-slug",
     });
