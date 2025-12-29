@@ -17,4 +17,3 @@ export const setPasswordSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .max(255, "Password cannot exceed 255 characters"),
 });
-
