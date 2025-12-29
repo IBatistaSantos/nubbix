@@ -37,22 +37,26 @@ export class InMemoryTemplateRepository implements TemplateRepository {
     accountId?: string | null
   ): Promise<Template | null> {
     for (const template of this.templates.values()) {
-      if (
-        template.deletedAt === null &&
-        template.context.value === context.value &&
-        template.language.value === language.value
-      ) {
-        // If accountId is provided (not undefined and not null), match it exactly
-        // If accountId is undefined or null, match templates with accountId === null
-        const hasAccountId = accountId !== undefined && accountId !== null && accountId !== "";
-        if (hasAccountId) {
-          if (template.accountId === accountId) {
-            return template;
-          }
-        } else {
-          if (template.accountId === null) {
-            return template;
-          }
+      // Skip deleted templates
+      if (template.deletedAt !== null) {
+        continue;
+      }
+
+      // Check if context and language match
+      if (template.context.value !== context.value || template.language.value !== language.value) {
+        continue;
+      }
+
+      // If accountId is provided (not undefined, not null, not empty string), match it exactly
+      // Otherwise, match templates with accountId === null
+      const hasAccountId = accountId !== undefined && accountId !== null && accountId !== "";
+      if (hasAccountId) {
+        if (template.accountId === accountId) {
+          return template;
+        }
+      } else {
+        if (template.accountId === null) {
+          return template;
         }
       }
     }
@@ -66,21 +70,30 @@ export class InMemoryTemplateRepository implements TemplateRepository {
     accountId?: string | null
   ): Promise<Template | null> {
     for (const template of this.templates.values()) {
+      // Skip deleted templates
+      if (template.deletedAt !== null) {
+        continue;
+      }
+
+      // Check if context, language, and channel match
       if (
-        template.deletedAt === null &&
-        template.context.value === context.value &&
-        template.language.value === language.value &&
-        template.channel.value === channel.value
+        template.context.value !== context.value ||
+        template.language.value !== language.value ||
+        template.channel.value !== channel.value
       ) {
-        const hasAccountId = accountId !== undefined && accountId !== null && accountId !== "";
-        if (hasAccountId) {
-          if (template.accountId === accountId) {
-            return template;
-          }
-        } else {
-          if (template.accountId === null) {
-            return template;
-          }
+        continue;
+      }
+
+      // If accountId is provided (not undefined, not null, not empty string), match it exactly
+      // Otherwise, match templates with accountId === null
+      const hasAccountId = accountId !== undefined && accountId !== null && accountId !== "";
+      if (hasAccountId) {
+        if (template.accountId === accountId) {
+          return template;
+        }
+      } else {
+        if (template.accountId === null) {
+          return template;
         }
       }
     }
@@ -92,8 +105,13 @@ export class InMemoryTemplateRepository implements TemplateRepository {
     language: Language
   ): Promise<Template | null> {
     for (const template of this.templates.values()) {
+      // Skip deleted templates
+      if (template.deletedAt !== null) {
+        continue;
+      }
+
+      // Check all conditions
       if (
-        template.deletedAt === null &&
         template.context.value === context.value &&
         template.language.value === language.value &&
         template.accountId === null &&
@@ -111,8 +129,13 @@ export class InMemoryTemplateRepository implements TemplateRepository {
     channel: Channel
   ): Promise<Template | null> {
     for (const template of this.templates.values()) {
+      // Skip deleted templates
+      if (template.deletedAt !== null) {
+        continue;
+      }
+
+      // Check all conditions
       if (
-        template.deletedAt === null &&
         template.context.value === context.value &&
         template.language.value === language.value &&
         template.channel.value === channel.value &&
