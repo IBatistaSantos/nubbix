@@ -590,6 +590,7 @@ describe("User", () => {
         email: email.toLowerCase().trim(),
         avatar,
         accountId,
+        password,
         role: RoleValue.USER,
         resetPasswordToken: token,
         resetPasswordTokenExpiresAt: json.resetPasswordTokenExpiresAt,
