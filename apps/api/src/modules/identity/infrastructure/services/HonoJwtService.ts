@@ -7,13 +7,20 @@ export class HonoJwtService implements JwtService {
   private readonly expiresIn: string;
 
   constructor() {
-    this.privateKey = process.env.JWT_PRIVATE_KEY || "";
-    this.publicKey = process.env.JWT_PUBLIC_KEY || "";
+    const rawPrivateKey = process.env.JWT_PRIVATE_KEY || "";
+    const rawPublicKey = process.env.JWT_PUBLIC_KEY || "";
     this.expiresIn = process.env.JWT_EXPIRES_IN || "7d";
 
-    if (!this.privateKey || !this.publicKey) {
+    if (!rawPrivateKey || !rawPublicKey) {
       throw new Error("JWT_PRIVATE_KEY and JWT_PUBLIC_KEY environment variables are required");
     }
+
+    this.privateKey = this.normalizeKey(rawPrivateKey);
+    this.publicKey = this.normalizeKey(rawPublicKey);
+  }
+
+  private normalizeKey(key: string): string {
+    return key.replace(/\\n/g, "\n");
   }
 
   async sign(payload: Omit<JwtPayload, "iat" | "exp">): Promise<string> {
