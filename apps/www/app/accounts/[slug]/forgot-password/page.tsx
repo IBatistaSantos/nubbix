@@ -17,7 +17,8 @@ import { useParams } from "next/navigation";
 export default function ForgotPasswordPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const { register, handleSubmit, errors, isLoading, error, isSuccess } = useForgotPasswordController();
+  const { register, handleSubmit, errors, isLoading, error, isSuccess } =
+    useForgotPasswordController();
 
   if (isSuccess) {
     return (
@@ -58,7 +59,12 @@ export default function ForgotPasswordPage() {
       />
 
       <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
-        <EmailField id="email" label="E-mail" error={errors.email?.message} register={register("email")} />
+        <EmailField
+          id="email"
+          label="E-mail"
+          error={errors.email?.message}
+          register={register("email")}
+        />
 
         <AuthButton isLoading={isLoading}>
           {isLoading ? "Enviando..." : "Enviar link de recuperação"}
@@ -66,7 +72,10 @@ export default function ForgotPasswordPage() {
       </form>
 
       <div className="mt-6 text-center">
-        <AuthLink href={`/accounts/${slug}/login`} className="flex items-center justify-center gap-2">
+        <AuthLink
+          href={`/accounts/${slug}/login`}
+          className="flex items-center justify-center gap-2"
+        >
           <ArrowLeft className="w-4 h-4" />
           Voltar para o login
         </AuthLink>
@@ -74,4 +83,3 @@ export default function ForgotPasswordPage() {
     </div>
   );
 }
-

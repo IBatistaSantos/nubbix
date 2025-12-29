@@ -18,7 +18,8 @@ import { useParams } from "next/navigation";
 function ResetPasswordForm() {
   const params = useParams();
   const slug = params.slug as string;
-  const { register, handleSubmit, errors, isLoading, error, hasToken, watch } = useResetPasswordController();
+  const { register, handleSubmit, errors, isLoading, error, hasToken, watch } =
+    useResetPasswordController();
 
   const passwordValue = watch("password") || "";
 
@@ -98,4 +99,3 @@ export default function ResetPasswordPage() {
     </Suspense>
   );
 }
-

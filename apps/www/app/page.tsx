@@ -6,21 +6,19 @@ import { apiClient } from "@/shared/http/apiClient";
 import { Logo, AuthHeader, AuthButton, ErrorMessage } from "@/modules/auth/presentation/components";
 import { AuthPromoPanel } from "@/modules/auth/presentation/components/AuthPromoPanel";
 
-type ValidateSlugResponse =
-  | {
-      id: string;
-      name: string;
-      slug: string;
-      description: string | null;
-      website: string | null;
-      logo: string | null;
-      accountType: string;
-      status: string;
-      createdAt: string;
-      updatedAt: string;
-      deletedAt: string | null;
-    }
-  | null;
+type ValidateSlugResponse = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  website: string | null;
+  logo: string | null;
+  accountType: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+} | null;
 
 export default function Home() {
   const router = useRouter();
@@ -100,4 +98,3 @@ export default function Home() {
     </div>
   );
 }
-

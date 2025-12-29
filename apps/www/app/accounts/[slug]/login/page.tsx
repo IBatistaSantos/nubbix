@@ -32,7 +32,12 @@ function LoginForm() {
       />
 
       <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
-        <EmailField id="email" label="E-mail" error={errors.email?.message} register={register("email")} />
+        <EmailField
+          id="email"
+          label="E-mail"
+          error={errors.email?.message}
+          register={register("email")}
+        />
 
         <PasswordField
           id="password"
@@ -67,4 +72,3 @@ export default function LoginPage() {
     </Suspense>
   );
 }
-
