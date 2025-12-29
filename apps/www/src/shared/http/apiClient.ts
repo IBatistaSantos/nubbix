@@ -5,12 +5,6 @@ type RequestOptions = {
   signal?: AbortSignal;
 };
 
-type ApiError = {
-  message: string;
-  status: number;
-  errors?: Record<string, string[]>;
-};
-
 export class ApiClientError extends Error {
   status: number;
   errors?: Record<string, string[]>;

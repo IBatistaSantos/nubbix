@@ -18,7 +18,7 @@ export async function POST() {
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: "Erro ao limpar token" }, { status: 500 });
   }
 }

@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "../../../../shared/http/apiClient";
 import type { User } from "../../domain/types/AuthTypes";
 
 const AUTH_QUERY_KEY = ["auth"] as const;

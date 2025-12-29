@@ -1,8 +1,5 @@
 import { z } from "zod";
 
-const strongPasswordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-
 export const resetPasswordSchema = z
   .object({
     token: z.string().min(1, "Token é obrigatório"),

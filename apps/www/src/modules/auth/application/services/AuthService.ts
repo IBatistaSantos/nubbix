@@ -18,6 +18,7 @@ export class AuthService {
   }
 
   async resetPassword(input: ResetPasswordInput): Promise<ResetPasswordOutput> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...resetInput } = input;
     return authApi.resetPassword(resetInput);
   }
