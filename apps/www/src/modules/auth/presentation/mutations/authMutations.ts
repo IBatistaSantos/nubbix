@@ -8,6 +8,7 @@ import type {
   ResetPasswordInput,
   ResetPasswordOutput,
 } from "../../application/dtos";
+import type { SetPasswordInput, SetPasswordOutput } from "../../application/dtos/SetPasswordDTO";
 
 const AUTH_QUERY_KEY = ["auth"] as const;
 
@@ -51,6 +52,15 @@ export function useResetPasswordMutation() {
   return useMutation({
     mutationFn: (input: ResetPasswordInput): Promise<ResetPasswordOutput> => {
       return authService.resetPassword(input);
+    },
+  });
+}
+
+// Set password mutation for onboarding
+export function useSetPasswordMutation() {
+  return useMutation({
+    mutationFn: (input: SetPasswordInput): Promise<SetPasswordOutput> => {
+      return authService.setPassword(input);
     },
   });
 }

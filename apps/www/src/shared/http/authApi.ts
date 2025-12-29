@@ -39,6 +39,16 @@ export interface ResetPasswordOutput {
   email: string;
 }
 
+export interface SetPasswordInput {
+  token: string;
+  password: string;
+}
+
+export interface SetPasswordOutput {
+  userId: string;
+  email: string;
+}
+
 export const authApi = {
   async login(input: Omit<LoginInput, "accountSlug">): Promise<LoginOutput> {
     const accountSlug = getAccountSlug();
@@ -97,6 +107,16 @@ export const authApi = {
       body: {
         ...input,
         accountSlug,
+      },
+    });
+  },
+
+  async setPassword(input: SetPasswordInput): Promise<SetPasswordOutput> {
+    return apiClient<SetPasswordOutput>("/accounts/set-password", {
+      method: "POST",
+      body: {
+        token: input.token,
+        password: input.password,
       },
     });
   },

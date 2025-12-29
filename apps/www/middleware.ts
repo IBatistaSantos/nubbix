@@ -38,7 +38,8 @@ export function middleware(request: NextRequest) {
     isAccountRoute &&
     (pathname.includes("/login") ||
       pathname.includes("/forgot-password") ||
-      pathname.includes("/reset-password"));
+      pathname.includes("/reset-password") ||
+      pathname.includes("/onboarding"));
 
   if (isPublicAccountRoute) {
     return NextResponse.next();
