@@ -9,10 +9,7 @@ import { PasswordHasher } from "../../../accounts/application/services/PasswordH
 import { NotFoundError } from "../../../../shared/errors";
 import { InvalidResetTokenException } from "../../domain/exceptions/InvalidResetTokenException";
 
-export class ResetPasswordUseCase extends BaseUseCase<
-  ResetPasswordInput,
-  ResetPasswordOutput
-> {
+export class ResetPasswordUseCase extends BaseUseCase<ResetPasswordInput, ResetPasswordOutput> {
   constructor(
     private userRepository: UserRepository,
     private passwordHasher: PasswordHasher,
@@ -21,16 +18,12 @@ export class ResetPasswordUseCase extends BaseUseCase<
     super();
   }
 
-  protected getInputValidator(): ReturnType<
-    typeof createZodValidator<ResetPasswordInput>
-  > {
+  protected getInputValidator(): ReturnType<typeof createZodValidator<ResetPasswordInput>> {
     // @ts-expect-error - Zod schema type inference
     return createZodValidator(resetPasswordSchema);
   }
 
-  protected async execute(
-    input: ResetPasswordInput
-  ): Promise<ResetPasswordOutput> {
+  protected async execute(input: ResetPasswordInput): Promise<ResetPasswordOutput> {
     const user = await this.userRepository.findByResetToken(input.token);
 
     if (!user) {
@@ -59,4 +52,3 @@ export class ResetPasswordUseCase extends BaseUseCase<
     });
   }
 }
-

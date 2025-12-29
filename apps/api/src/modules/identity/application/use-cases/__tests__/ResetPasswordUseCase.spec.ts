@@ -31,11 +31,7 @@ describe("ResetPasswordUseCase", () => {
       },
     };
 
-    useCase = new ResetPasswordUseCase(
-      userRepository,
-      passwordHasher,
-      transactionManager
-    );
+    useCase = new ResetPasswordUseCase(userRepository, passwordHasher, transactionManager);
   });
 
   it("should reset password successfully with valid token", async () => {
@@ -148,4 +144,3 @@ describe("ResetPasswordUseCase", () => {
     expect(savedUser!.resetPasswordTokenExpiresAt).toBeNull();
   });
 });
-

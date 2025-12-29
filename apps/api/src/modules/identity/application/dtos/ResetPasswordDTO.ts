@@ -11,4 +11,3 @@ export interface ResetPasswordOutput {
   userId: string;
   email: string;
 }
-
