@@ -1,4 +1,7 @@
-import { HttpHandler, HttpRequest } from "../../../../shared/presentation/http/interfaces/HttpRequest";
+import {
+  HttpHandler,
+  HttpRequest,
+} from "../../../../shared/presentation/http/interfaces/HttpRequest";
 import { createGetCurrentUserUseCase } from "../../infrastructure/di/AuthUseCaseFactory";
 import { getAuthContext } from "../../../../infrastructure/http/middleware/authMiddleware";
 import { Context } from "hono";
