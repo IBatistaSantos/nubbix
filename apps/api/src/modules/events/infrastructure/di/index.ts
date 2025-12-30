@@ -5,4 +5,3 @@ export * from "./ListEventsUseCaseFactory";
 export * from "./DeleteEventUseCaseFactory";
 export * from "./ListEventDatesUseCaseFactory";
 export * from "./UpdateEventDatesUseCaseFactory";
-

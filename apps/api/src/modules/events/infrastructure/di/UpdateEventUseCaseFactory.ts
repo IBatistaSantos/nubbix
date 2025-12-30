@@ -10,4 +10,3 @@ export function createUpdateEventUseCase(): UpdateEventUseCase {
 
   return new UpdateEventUseCase(eventRepository);
 }
-

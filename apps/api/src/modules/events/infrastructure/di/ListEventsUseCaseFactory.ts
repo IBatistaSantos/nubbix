@@ -10,4 +10,3 @@ export function createListEventsUseCase(): ListEventsUseCase {
 
   return new ListEventsUseCase(eventRepository);
 }
-

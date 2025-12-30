@@ -10,4 +10,3 @@ export function createGetEventUseCase(): GetEventUseCase {
 
   return new GetEventUseCase(eventRepository);
 }
-

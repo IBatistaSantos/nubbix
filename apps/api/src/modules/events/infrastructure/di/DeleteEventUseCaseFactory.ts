@@ -10,4 +10,3 @@ export function createDeleteEventUseCase(): DeleteEventUseCase {
 
   return new DeleteEventUseCase(eventRepository);
 }
-
