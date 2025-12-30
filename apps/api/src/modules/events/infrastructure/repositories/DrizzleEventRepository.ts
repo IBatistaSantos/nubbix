@@ -1,4 +1,11 @@
-import { ID, Status, StatusValue, PaginationResult, PaginationParams, TransactionContext } from "@nubbix/domain";
+import {
+  ID,
+  Status,
+  StatusValue,
+  PaginationResult,
+  PaginationParams,
+  TransactionContext,
+} from "@nubbix/domain";
 import { eq, and, isNull, sql, desc } from "drizzle-orm";
 import { BaseDrizzleRepository } from "../../../../shared/infrastructure/repositories/BaseDrizzleRepository";
 import { events, eventDates } from "../../../../shared/infrastructure/db";
@@ -10,7 +17,6 @@ import { EventType } from "../../domain/vo/EventType";
 import { Address } from "../../domain/vo/Address";
 import { TicketSales } from "../../domain/vo/TicketSales";
 import { EventDate } from "../../domain/vo/EventDate";
-
 
 type EventSchema = typeof events.$inferSelect;
 type EventDateSchema = typeof eventDates.$inferSelect;
@@ -36,7 +42,9 @@ export class DrizzleEventRepository
       url: schema.url,
       address: schema.address ? Address.create(schema.address) : null,
       maxCapacity: schema.maxCapacity ?? null,
-      ticketSales: schema.ticketSales ? TicketSales.create(schema.ticketSales as any) : TicketSales.disabled(),
+      ticketSales: schema.ticketSales
+        ? TicketSales.create(schema.ticketSales as any)
+        : TicketSales.disabled(),
       tags: schema.tags ?? [],
       dates: [], // Será preenchido pelo método que busca com datas
       status,
@@ -56,7 +64,7 @@ export class DrizzleEventRepository
       url: entity.url.value,
       address: entity.address?.toJSON() ?? null,
       maxCapacity: entity.maxCapacity ?? null,
-      ticketSales: entity.ticketSales ? entity.ticketSales.toJSON() as any : null,
+      ticketSales: entity.ticketSales ? (entity.ticketSales.toJSON() as any) : null,
       tags: entity.tags,
       status: entity.status.value as any,
       createdAt: entity.createdAt,
@@ -68,27 +76,23 @@ export class DrizzleEventRepository
   private toEventDateDomain(schema: EventDateSchema): EventDate {
     // Converter date para string YYYY-MM-DD
     // Drizzle retorna date como string no formato YYYY-MM-DD
-    const dateStr = typeof schema.date === 'string' 
-      ? schema.date
-      : String(schema.date);
-    
+    const dateStr = typeof schema.date === "string" ? schema.date : String(schema.date);
+
     // Converter time para string HH:mm
     // Drizzle retorna time como string no formato HH:mm:ss ou HH:mm
     let startTimeStr = String(schema.startTime);
-    if (startTimeStr.includes(':')) {
+    if (startTimeStr.includes(":")) {
       // Se for HH:mm:ss, pegar apenas HH:mm
       startTimeStr = startTimeStr.substring(0, 5);
     }
-    
+
     let endTimeStr = String(schema.endTime);
-    if (endTimeStr.includes(':')) {
+    if (endTimeStr.includes(":")) {
       // Se for HH:mm:ss, pegar apenas HH:mm
       endTimeStr = endTimeStr.substring(0, 5);
     }
 
-    const finishedAtStr = schema.finishedAt 
-      ? String(schema.finishedAt)
-      : null;
+    const finishedAtStr = schema.finishedAt ? String(schema.finishedAt) : null;
 
     return EventDate.create({
       id: schema.id,
@@ -100,7 +104,10 @@ export class DrizzleEventRepository
     });
   }
 
-  private toEventDateSchema(date: EventDate, eventId: string): Partial<EventDateSchema> & { id: string; eventId: string } {
+  private toEventDateSchema(
+    date: EventDate,
+    eventId: string
+  ): Partial<EventDateSchema> & { id: string; eventId: string } {
     return {
       id: date.id.value,
       eventId,
@@ -114,17 +121,18 @@ export class DrizzleEventRepository
 
   private async findEventDates(eventId: string, tx?: TransactionContext): Promise<EventDate[]> {
     const database = this.getDatabase(tx);
-    const result = await database
-      .select()
-      .from(eventDates)
-      .where(eq(eventDates.eventId, eventId));
+    const result = await database.select().from(eventDates).where(eq(eventDates.eventId, eventId));
 
     return result.map((date) => this.toEventDateDomain(date));
   }
 
-  private async saveEventDates(eventId: string, dates: EventDate[], tx: TransactionContext): Promise<void> {
+  private async saveEventDates(
+    eventId: string,
+    dates: EventDate[],
+    tx: TransactionContext
+  ): Promise<void> {
     const database = this.getDatabase(tx);
-    
+
     if (dates.length === 0) {
       return;
     }
@@ -186,7 +194,7 @@ export class DrizzleEventRepository
 
     // Buscar datas relacionadas
     const dates = await this.findEventDates(id.value, tx);
-    
+
     // Criar novo evento com as datas
     const status = event.status.isActive() ? Status.active() : Status.inactive();
     return new Event({
@@ -213,11 +221,7 @@ export class DrizzleEventRepository
       .select()
       .from(events)
       .where(
-        and(
-          eq(events.accountId, accountId),
-          eq(events.url, url.value),
-          isNull(events.deletedAt)
-        )
+        and(eq(events.accountId, accountId), eq(events.url, url.value), isNull(events.deletedAt))
       )
       .limit(1);
 
@@ -227,7 +231,7 @@ export class DrizzleEventRepository
 
     const eventSchema = result[0];
     const dates = await this.findEventDates(eventSchema.id);
-    
+
     const status = eventSchema.status === StatusValue.ACTIVE ? Status.active() : Status.inactive();
     return new Event({
       id: eventSchema.id,
@@ -238,7 +242,9 @@ export class DrizzleEventRepository
       url: eventSchema.url,
       address: eventSchema.address ? Address.create(eventSchema.address) : null,
       maxCapacity: eventSchema.maxCapacity ?? null,
-      ticketSales: eventSchema.ticketSales ? TicketSales.create(eventSchema.ticketSales as any) : TicketSales.disabled(),
+      ticketSales: eventSchema.ticketSales
+        ? TicketSales.create(eventSchema.ticketSales as any)
+        : TicketSales.disabled(),
       tags: eventSchema.tags ?? [],
       dates,
       status,
@@ -253,11 +259,7 @@ export class DrizzleEventRepository
       .select()
       .from(events)
       .where(
-        and(
-          eq(events.accountId, accountId),
-          eq(events.url, url.value),
-          isNull(events.deletedAt)
-        )
+        and(eq(events.accountId, accountId), eq(events.url, url.value), isNull(events.deletedAt))
       )
       .limit(1);
 
@@ -273,7 +275,8 @@ export class DrizzleEventRepository
     const eventsWithDates = await Promise.all(
       result.map(async (eventSchema) => {
         const dates = await this.findEventDates(eventSchema.id);
-        const status = eventSchema.status === StatusValue.ACTIVE ? Status.active() : Status.inactive();
+        const status =
+          eventSchema.status === StatusValue.ACTIVE ? Status.active() : Status.inactive();
         return new Event({
           id: eventSchema.id,
           accountId: eventSchema.accountId,
@@ -283,7 +286,9 @@ export class DrizzleEventRepository
           url: eventSchema.url,
           address: eventSchema.address ? Address.create(eventSchema.address) : null,
           maxCapacity: eventSchema.maxCapacity ?? null,
-          ticketSales: eventSchema.ticketSales ? TicketSales.create(eventSchema.ticketSales as any) : TicketSales.disabled(),
+          ticketSales: eventSchema.ticketSales
+            ? TicketSales.create(eventSchema.ticketSales as any)
+            : TicketSales.disabled(),
           tags: eventSchema.tags ?? [],
           dates,
           status,
@@ -304,15 +309,13 @@ export class DrizzleEventRepository
     tx?: TransactionContext
   ): Promise<PaginationResult<Event>> {
     const database = this.getDatabase(tx);
-    
+
     // Construir condições de filtro
     const conditions = [eq(events.accountId, accountId), isNull(events.deletedAt)];
 
     if (filters.tags && filters.tags.length > 0) {
       // Filtrar por tags usando JSONB contains
-      conditions.push(
-        sql`${events.tags} @> ${JSON.stringify(filters.tags)}::jsonb`
-      );
+      conditions.push(sql`${events.tags} @> ${JSON.stringify(filters.tags)}::jsonb`);
     }
 
     if (filters.type) {
@@ -326,9 +329,7 @@ export class DrizzleEventRepository
     }
 
     if (filters.ticketSalesStatus) {
-      conditions.push(
-        sql`${events.ticketSales}->>'status' = ${filters.ticketSalesStatus}`
-      );
+      conditions.push(sql`${events.ticketSales}->>'status' = ${filters.ticketSalesStatus}`);
     }
 
     const whereClause = and(...conditions);
@@ -358,7 +359,8 @@ export class DrizzleEventRepository
     const eventsWithDates = await Promise.all(
       result.map(async (eventSchema) => {
         const dates = await this.findEventDates(eventSchema.id, tx);
-        const status = eventSchema.status === StatusValue.ACTIVE ? Status.active() : Status.inactive();
+        const status =
+          eventSchema.status === StatusValue.ACTIVE ? Status.active() : Status.inactive();
         return new Event({
           id: eventSchema.id,
           accountId: eventSchema.accountId,
@@ -368,7 +370,9 @@ export class DrizzleEventRepository
           url: eventSchema.url,
           address: eventSchema.address ? Address.create(eventSchema.address) : null,
           maxCapacity: eventSchema.maxCapacity ?? null,
-          ticketSales: eventSchema.ticketSales ? TicketSales.create(eventSchema.ticketSales as any) : TicketSales.disabled(),
+          ticketSales: eventSchema.ticketSales
+            ? TicketSales.create(eventSchema.ticketSales as any)
+            : TicketSales.disabled(),
           tags: eventSchema.tags ?? [],
           dates,
           status,
@@ -390,4 +394,3 @@ export class DrizzleEventRepository
     };
   }
 }
-
