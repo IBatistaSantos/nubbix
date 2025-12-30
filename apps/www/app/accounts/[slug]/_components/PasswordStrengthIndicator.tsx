@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { Check, X } from "lucide-react";
+import { Progress } from "@nubbix/ui/progress";
 
 interface PasswordRequirement {
   label: string;
@@ -61,7 +62,6 @@ export function PasswordStrengthIndicator({ password }: PasswordStrengthIndicato
 
   return (
     <div className="space-y-3">
-      {/* Progress bar */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-xs font-medium text-text-secondary">
@@ -71,15 +71,13 @@ export function PasswordStrengthIndicator({ password }: PasswordStrengthIndicato
             {strength.score}/{requirements.length}
           </span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-          <div
-            className={`h-full transition-all duration-300 ${strength.color}`}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        <Progress
+          value={progress}
+          className="h-2 bg-gray-200"
+          indicatorClassName={strength.color}
+        />
       </div>
 
-      {/* Requirements list */}
       <div className="space-y-2">
         {requirements.map((requirement, index) => {
           const isMet = requirement.test(password);
