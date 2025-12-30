@@ -1,4 +1,5 @@
-import { apiClient } from "./apiClient";
+import { apiClient, clearAuthTokenCache } from "./apiClient";
+import { setAuthToken, clearAuthToken } from "../actions/authActions";
 
 export interface LoginInput {
   email: string;
@@ -56,13 +57,8 @@ export const authApi = {
     });
 
     if (response.accessToken) {
-      await fetch("/api/auth/set-token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: response.accessToken }),
-      });
+      await setAuthToken(response.accessToken);
+      clearAuthTokenCache();
     }
 
     return response;
@@ -105,8 +101,7 @@ export const authApi = {
   },
 
   async logout(): Promise<void> {
-    await fetch("/api/auth/clear-token", {
-      method: "POST",
-    });
+    await clearAuthToken();
+    clearAuthTokenCache();
   },
 };

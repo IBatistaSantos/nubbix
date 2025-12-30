@@ -30,6 +30,49 @@ const getBaseUrl = (): string => {
   return `${protocol}${cleanUrl}`;
 };
 
+let tokenCache: { token: string | null; timestamp: number } | null = null;
+const CACHE_DURATION = 5 * 60 * 1000;
+
+export function clearAuthTokenCache(): void {
+  tokenCache = null;
+}
+
+async function getAuthToken(): Promise<string | null> {
+  if (typeof window === "undefined") {
+    try {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      const token = cookieStore.get("auth-token");
+      return token?.value || null;
+    } catch {
+      return null;
+    }
+  }
+
+  const now = Date.now();
+  if (tokenCache && now - tokenCache.timestamp < CACHE_DURATION) {
+    return tokenCache.token;
+  }
+
+  try {
+    const response = await fetch("/api/auth/token", {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      tokenCache = { token: null, timestamp: now };
+      return null;
+    }
+
+    const data = (await response.json()) as { token: string | null };
+    tokenCache = { token: data.token, timestamp: now };
+    return data.token;
+  } catch {
+    tokenCache = { token: null, timestamp: now };
+    return null;
+  }
+}
+
 export async function apiClient<T = unknown>(
   endpoint: string,
   options: RequestOptions = {}
@@ -38,10 +81,16 @@ export async function apiClient<T = unknown>(
   const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const url = `${baseUrl}/v1${normalizedEndpoint}`;
 
+  const token = await getAuthToken();
+
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...options.headers,
   };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
   const config: RequestInit = {
     method: options.method || "GET",
@@ -56,6 +105,10 @@ export async function apiClient<T = unknown>(
 
   try {
     const response = await fetch(url, config);
+
+    if (response.status === 401) {
+      tokenCache = null;
+    }
 
     const contentType = response.headers.get("content-type");
     const hasContent = contentType?.includes("application/json");
@@ -77,6 +130,9 @@ export async function apiClient<T = unknown>(
     return data as T;
   } catch (error) {
     if (error instanceof ApiClientError) {
+      if (error.status === 401) {
+        tokenCache = null;
+      }
       throw error;
     }
 

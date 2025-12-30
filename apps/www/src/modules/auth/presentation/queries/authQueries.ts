@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { User } from "../../domain/types/AuthTypes";
+import { apiClient } from "../../../../shared/http/apiClient";
 
 const AUTH_QUERY_KEY = ["auth"] as const;
 
@@ -8,21 +9,17 @@ export function useAuthQuery() {
     queryKey: AUTH_QUERY_KEY,
     queryFn: async (): Promise<User | null> => {
       try {
-        // Endpoint para verificar autenticação atual
-        // Por enquanto, retornar null - pode ser implementado quando houver endpoint /auth/me
-        // Quando o endpoint estiver disponível, descomentar:
-        // const response = await apiClient<{ user: User }>('/auth/me', {
-        //   method: 'GET',
-        // })
-        // return response.user
-        return null;
+        const response = await apiClient<User>("/auth/me", {
+          method: "GET",
+        });
+        return response;
       } catch {
         return null;
       }
     },
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutos
-    enabled: false, // Desabilitado até que o endpoint /auth/me esteja disponível
+    enabled: true,
   });
 }
 
