@@ -3,15 +3,13 @@
 import { Suspense } from "react";
 import { useParams } from "next/navigation";
 import { useLoginController } from "@/modules/auth/presentation/controllers/useLoginController";
-import {
-  Logo,
-  EmailField,
-  PasswordField,
-  ErrorMessage,
-  AuthButton,
-  AuthLink,
-  AuthHeader,
-} from "@/modules/auth/presentation/components";
+import { Logo } from "../../../_components/Logo";
+import { AuthHeader } from "../../../_components/AuthHeader";
+import { ErrorMessage } from "../../../_components/ErrorMessage";
+import { AuthButton } from "../../../_components/AuthButton";
+import { EmailField } from "../_components/EmailField";
+import { PasswordField } from "../_components/PasswordField";
+import { AuthLink } from "../_components/AuthLink";
 
 function LoginForm() {
   const params = useParams();

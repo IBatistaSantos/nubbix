@@ -1,14 +1,12 @@
 "use client";
 
 import { useSetPasswordController } from "@/modules/auth/presentation/controllers/useSetPasswordController";
-import {
-  Logo,
-  PasswordField,
-  ErrorMessage,
-  AuthButton,
-  AuthHeader,
-} from "@/modules/auth/presentation/components";
-import { PasswordStrengthField } from "@/modules/auth/presentation/components/PasswordStrengthField";
+import { Logo } from "../../../_components/Logo";
+import { AuthHeader } from "../../../_components/AuthHeader";
+import { ErrorMessage } from "../../../_components/ErrorMessage";
+import { AuthButton } from "../../../_components/AuthButton";
+import { PasswordField } from "../_components/PasswordField";
+import { PasswordStrengthField } from "../_components/PasswordStrengthField";
 import { AlertCircle } from "lucide-react";
 import { Suspense } from "react";
 import { useParams } from "next/navigation";

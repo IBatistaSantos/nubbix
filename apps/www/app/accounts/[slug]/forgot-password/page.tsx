@@ -1,14 +1,12 @@
 "use client";
 
 import { useForgotPasswordController } from "@/modules/auth/presentation/controllers/useForgotPasswordController";
-import {
-  Logo,
-  EmailField,
-  ErrorMessage,
-  AuthButton,
-  AuthLink,
-  AuthHeader,
-} from "@/modules/auth/presentation/components";
+import { Logo } from "../../../_components/Logo";
+import { AuthHeader } from "../../../_components/AuthHeader";
+import { ErrorMessage } from "../../../_components/ErrorMessage";
+import { AuthButton } from "../../../_components/AuthButton";
+import { EmailField } from "../_components/EmailField";
+import { AuthLink } from "../_components/AuthLink";
 import { Button } from "@nubbix/ui/button";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
