@@ -7,12 +7,7 @@ const PUBLIC_ROUTES = ["/"];
 
 const API_ROUTES = ["/api"];
 
-const PUBLIC_ACCOUNT_ROUTES = [
-  "/login",
-  "/forgot-password",
-  "/reset-password",
-  "/onboarding",
-];
+const PUBLIC_ACCOUNT_ROUTES = ["/login", "/forgot-password", "/reset-password", "/onboarding"];
 
 const PROTECTED_ROUTES = ["/dashboard", "/events"];
 
@@ -53,7 +48,11 @@ function getAuthToken(request: NextRequest): string | undefined {
   return request.cookies.get(COOKIE_NAME)?.value;
 }
 
-function redirectToLogin(request: NextRequest, accountSlug: string, redirectPath: string): NextResponse {
+function redirectToLogin(
+  request: NextRequest,
+  accountSlug: string,
+  redirectPath: string
+): NextResponse {
   const loginUrl = new URL(`/accounts/${accountSlug}/login`, request.url);
   loginUrl.searchParams.set("redirect", redirectPath);
   return NextResponse.redirect(loginUrl);
@@ -72,10 +71,7 @@ export function middleware(request: NextRequest) {
 
   const accountSlug = getAccountSlugFromPathname(pathname);
   if (accountSlug && !isValidAccountSlug(accountSlug)) {
-    return NextResponse.json(
-      { message: "Invalid account slug format" },
-      { status: 400 }
-    );
+    return NextResponse.json({ message: "Invalid account slug format" }, { status: 400 });
   }
 
   if (isAccountRoute(pathname)) {
