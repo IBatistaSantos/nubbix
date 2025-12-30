@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useAuthQuery } from "../queries/authQueries";
 import {
   useLoginMutation,
@@ -14,32 +15,49 @@ export function useAuthController(accountSlug?: string) {
   const forgotPasswordMutation = useForgotPasswordMutation();
   const resetPasswordMutation = useResetPasswordMutation();
 
-  return {
-    user,
-    isAuthenticated: !!user,
-    isLoading: isLoading || loginMutation.isPending,
-    isError,
-    login: async (input: LoginInput) => {
+  const login = useCallback(
+    async (input: LoginInput) => {
       if (!accountSlug) {
         throw new Error("Account slug is required for login");
       }
       return loginMutation.mutateAsync({ input, accountSlug });
     },
-    logout: async () => {
-      return logoutMutation.mutateAsync();
-    },
-    forgotPassword: async (input: ForgotPasswordInput) => {
+    [accountSlug, loginMutation]
+  );
+
+  const logout = useCallback(async () => {
+    return logoutMutation.mutateAsync();
+  }, [logoutMutation]);
+
+  const forgotPassword = useCallback(
+    async (input: ForgotPasswordInput) => {
       if (!accountSlug) {
         throw new Error("Account slug is required for forgot password");
       }
       return forgotPasswordMutation.mutateAsync({ input, accountSlug });
     },
-    resetPassword: async (input: ResetPasswordInput) => {
+    [accountSlug, forgotPasswordMutation]
+  );
+
+  const resetPassword = useCallback(
+    async (input: ResetPasswordInput) => {
       if (!accountSlug) {
         throw new Error("Account slug is required for reset password");
       }
       return resetPasswordMutation.mutateAsync({ input, accountSlug });
     },
+    [accountSlug, resetPasswordMutation]
+  );
+
+  return {
+    user,
+    isAuthenticated: !!user,
+    isLoading: isLoading || loginMutation.isPending,
+    isError,
+    login,
+    logout,
+    forgotPassword,
+    resetPassword,
     loginError: loginMutation.error,
     logoutError: logoutMutation.error,
     forgotPasswordError: forgotPasswordMutation.error,

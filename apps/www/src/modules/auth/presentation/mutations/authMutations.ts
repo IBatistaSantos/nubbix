@@ -74,7 +74,6 @@ export function useResetPasswordMutation() {
   });
 }
 
-// Set password mutation for onboarding
 export function useSetPasswordMutation() {
   return useMutation({
     mutationFn: (input: SetPasswordInput): Promise<SetPasswordOutput> => {
