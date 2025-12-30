@@ -1,4 +1,4 @@
-import { AuthPromoPanel } from "../../../src/modules/auth/presentation/components/AuthPromoPanel";
+import { AuthPromoPanel } from "./_components/AuthPromoPanel";
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   return (
