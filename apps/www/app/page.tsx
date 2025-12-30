@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/shared/http/apiClient";
-import { Logo, AuthHeader, AuthButton, ErrorMessage } from "@/modules/auth/presentation/components";
-import { AuthPromoPanel } from "@/modules/auth/presentation/components/AuthPromoPanel";
+import { Logo } from "./_components/Logo";
+import { AuthHeader } from "./_components/AuthHeader";
+import { AuthButton } from "./_components/AuthButton";
+import { ErrorMessage } from "./_components/ErrorMessage";
+import { AuthPromoPanel } from "./accounts/[slug]/_components/AuthPromoPanel";
 
 type ValidateSlugResponse = {
   id: string;
