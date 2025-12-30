@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuthController } from "@/modules/auth/presentation/controllers/useAuthController";
+import { Button } from "@nubbix/ui/button";
 
 export default function AccountPage() {
   const router = useRouter();
@@ -16,18 +17,22 @@ export default function AccountPage() {
     }
   }, [user, isLoading, router, slug]);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await logout();
       router.push(`/accounts/${slug}/login`);
     } catch (error) {
       console.error("Logout error:", error);
     }
-  };
+  }, [logout, router, slug]);
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div
+        className="flex items-center justify-center min-h-screen"
+        role="status"
+        aria-live="polite"
+      >
         <div className="text-center">
           <p className="text-text-secondary">Carregando...</p>
         </div>
@@ -42,13 +47,14 @@ export default function AccountPage() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center space-y-4">
-        <h1 className="text-2xl font-bold text-text-primary">Hello, {user.name}!</h1>
-        <button
+        <h1 className="text-2xl font-bold text-text-primary">Olá, {user.name}!</h1>
+        <Button
           onClick={handleLogout}
-          className="px-4 py-2 bg-brand-primary text-white rounded-md hover:bg-brand-primary-hover transition-colors"
+          aria-label="Sair da conta"
+          className="bg-brand-primary hover:bg-brand-primary-hover"
         >
-          Logout
-        </button>
+          Sair
+        </Button>
       </div>
     </div>
   );

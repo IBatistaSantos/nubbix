@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@nubbix/ui/input";
+import { Button } from "@nubbix/ui/button";
 import { Lock, Eye, EyeOff } from "lucide-react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { useState } from "react";
@@ -47,18 +48,21 @@ export function PasswordStrengthField({
           <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
             <Lock className="h-5 w-5" />
           </span>
-          <button
+          <Button
             type="button"
-            className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-text-muted hover:text-brand-primary transition-colors touch-manipulation"
+            variant="ghost"
+            size="icon"
+            className="absolute inset-y-0 right-0 pr-3.5 h-full w-auto text-text-muted hover:text-brand-primary hover:bg-transparent"
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            aria-pressed={showPassword}
           >
             {showPassword ? (
               <EyeOff className="h-5 w-5" aria-hidden="true" />
             ) : (
               <Eye className="h-5 w-5" aria-hidden="true" />
             )}
-          </button>
+          </Button>
         </div>
 
         {showStrengthIndicator && watchValue && <PasswordStrengthIndicator password={watchValue} />}
