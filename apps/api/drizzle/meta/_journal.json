@@ -15,6 +15,20 @@
       "when": 1766954312396,
       "tag": "0001_square_glorian",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1767047874911,
+      "tag": "0002_fine_talisman",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1767048258924,
+      "tag": "0003_tricky_thor",
+      "breakpoints": true
     }
   ]
 }
