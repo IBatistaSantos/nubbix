@@ -442,8 +442,13 @@ describe("Event", () => {
 
   describe("addDate", () => {
     let event: Event;
+    let futureDate1: string;
+    let futureDate2: string;
 
     beforeEach(() => {
+      futureDate1 = faker.date.future().toISOString().split("T")[0];
+      futureDate2 = faker.date.future({ years: 1 }).toISOString().split("T")[0];
+
       event = new Event({
         accountId,
         name: "Test Event",
@@ -454,7 +459,7 @@ describe("Event", () => {
         dates: [
           EventDate.create({
             id: "date_01",
-            date: "2025-01-01",
+            date: futureDate1,
             startTime: "10:00",
             endTime: "12:00",
             finished: false,
@@ -467,7 +472,7 @@ describe("Event", () => {
     it("should add a new date", () => {
       event.addDate({
         id: "date_02",
-        date: "2025-01-02",
+        date: futureDate2,
         startTime: "14:00",
         endTime: "16:00",
         finished: false,
@@ -482,7 +487,7 @@ describe("Event", () => {
       expect(() => {
         event.addDate({
           id: "date_02",
-          date: "2025-01-01",
+          date: futureDate1,
           startTime: "10:00",
           endTime: "12:00",
           finished: false,
@@ -496,7 +501,7 @@ describe("Event", () => {
       expect(() => {
         event.addDate({
           id: "date_02",
-          date: "2025-01-02",
+          date: futureDate2,
           startTime: "14:00",
           endTime: "16:00",
           finished: false,
@@ -508,8 +513,13 @@ describe("Event", () => {
 
   describe("updateDate", () => {
     let event: Event;
+    let futureDate1: string;
+    let futureDate2: string;
 
     beforeEach(() => {
+      futureDate1 = faker.date.future().toISOString().split("T")[0];
+      futureDate2 = faker.date.future({ years: 1 }).toISOString().split("T")[0];
+
       event = new Event({
         accountId,
         name: "Test Event",
@@ -520,7 +530,7 @@ describe("Event", () => {
         dates: [
           EventDate.create({
             id: "date_01",
-            date: "2025-01-01",
+            date: futureDate1,
             startTime: "10:00",
             endTime: "12:00",
             finished: false,
@@ -532,12 +542,12 @@ describe("Event", () => {
 
     it("should update date", () => {
       event.updateDate("date_01", {
-        date: "2025-01-02",
+        date: futureDate2,
         startTime: "14:00",
         endTime: "16:00",
       });
 
-      expect(event.dates[0].date).toBe("2025-01-02");
+      expect(event.dates[0].date).toBe(futureDate2);
       expect(event.dates[0].startTime).toBe("14:00");
       expect(event.dates[0].endTime).toBe("16:00");
     });
@@ -545,7 +555,7 @@ describe("Event", () => {
     it("should throw ValidationError when updating non-existent date", () => {
       expect(() => {
         event.updateDate("date_99", {
-          date: "2025-01-02",
+          date: futureDate2,
         });
       }).toThrow(ValidationError);
     });
@@ -554,7 +564,7 @@ describe("Event", () => {
       event.finishDate("date_01");
       expect(() => {
         event.updateDate("date_01", {
-          date: "2025-01-02",
+          date: futureDate2,
         });
       }).toThrow(ValidationError);
     });
@@ -562,7 +572,7 @@ describe("Event", () => {
     it("should throw ValidationError when updating to duplicate (date, startTime, endTime)", () => {
       event.addDate({
         id: "date_02",
-        date: "2025-01-02",
+        date: futureDate2,
         startTime: "14:00",
         endTime: "16:00",
         finished: false,
@@ -571,7 +581,7 @@ describe("Event", () => {
 
       expect(() => {
         event.updateDate("date_01", {
-          date: "2025-01-02",
+          date: futureDate2,
           startTime: "14:00",
           endTime: "16:00",
         });
