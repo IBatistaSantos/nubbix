@@ -201,6 +201,91 @@ describe("EventDate", () => {
     });
   });
 
+  describe("validateDates", () => {
+    it("should not throw when all dates are in the future", () => {
+      const futureDate1 = faker.date.future().toISOString().split("T")[0];
+      const futureDate2 = faker.date.future().toISOString().split("T")[0];
+      const futureDate3 = faker.date.future().toISOString().split("T")[0];
+
+      expect(() => {
+        EventDate.validateDates([futureDate1, futureDate2, futureDate3]);
+      }).not.toThrow();
+    });
+
+    it("should not throw when date is today", () => {
+      const today = new Date().toISOString().split("T")[0];
+
+      expect(() => {
+        EventDate.validateDates([today]);
+      }).not.toThrow();
+    });
+
+    it("should throw ValidationError when at least one date is in the past", () => {
+      const pastDate = faker.date.past().toISOString().split("T")[0];
+      const futureDate = faker.date.future().toISOString().split("T")[0];
+
+      expect(() => {
+        EventDate.validateDates([pastDate, futureDate]);
+      }).toThrow(ValidationError);
+
+      try {
+        EventDate.validateDates([pastDate, futureDate]);
+      } catch (error) {
+        expect(error).toBeInstanceOf(ValidationError);
+        expect((error as ValidationError).message).toBe(
+          "Cannot create or update event dates in the past"
+        );
+        expect((error as ValidationError).details).toHaveLength(1);
+        expect((error as ValidationError).details[0].path).toBe("dates[].date");
+        expect((error as ValidationError).details[0].message).toBe(
+          "Cannot create or update event dates in the past"
+        );
+      }
+    });
+
+    it("should throw ValidationError when all dates are in the past", () => {
+      const pastDate1 = faker.date.past().toISOString().split("T")[0];
+      const pastDate2 = faker.date.past().toISOString().split("T")[0];
+      const pastDate3 = faker.date.past().toISOString().split("T")[0];
+
+      expect(() => {
+        EventDate.validateDates([pastDate1, pastDate2, pastDate3]);
+      }).toThrow(ValidationError);
+    });
+
+    it("should throw ValidationError when single date is in the past", () => {
+      const pastDate = faker.date.past().toISOString().split("T")[0];
+
+      expect(() => {
+        EventDate.validateDates([pastDate]);
+      }).toThrow(ValidationError);
+    });
+
+    it("should handle empty array without throwing", () => {
+      expect(() => {
+        EventDate.validateDates([]);
+      }).not.toThrow();
+    });
+
+    it("should validate dates correctly comparing only the date part (ignoring time)", () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayString = today.toISOString().split("T")[0];
+
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayString = yesterday.toISOString().split("T")[0];
+
+      expect(() => {
+        EventDate.validateDates([todayString]);
+      }).not.toThrow();
+
+      expect(() => {
+        EventDate.validateDates([yesterdayString]);
+      }).toThrow(ValidationError);
+    });
+  });
+
   describe("toJSON", () => {
     it("should return JSON representation", () => {
       const dateId = faker.string.uuid();
