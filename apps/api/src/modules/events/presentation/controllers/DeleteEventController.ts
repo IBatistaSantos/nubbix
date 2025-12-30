@@ -12,4 +12,3 @@ export const deleteEventController: HttpHandler = async (request) => {
     data: null,
   };
 };
-

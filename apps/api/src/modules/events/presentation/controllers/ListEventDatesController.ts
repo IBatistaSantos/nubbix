@@ -12,4 +12,3 @@ export const listEventDatesController: HttpHandler = async (request) => {
     data: output,
   };
 };
-

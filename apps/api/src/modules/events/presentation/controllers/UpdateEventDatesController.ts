@@ -19,4 +19,3 @@ export const updateEventDatesController: HttpHandler = async (request) => {
     data: output,
   };
 };
-

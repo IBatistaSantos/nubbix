@@ -11,7 +11,7 @@ export const createEventController: HttpHandler = async (request) => {
   const c = (request as HttpRequest & { context: Context }).context;
   const authContext = getAuthContext(c);
   const body = request.body as Omit<CreateEventInput, "accountId">;
-  
+
   const input: CreateEventInput = {
     ...body,
     accountId: authContext.accountId,
@@ -25,4 +25,3 @@ export const createEventController: HttpHandler = async (request) => {
     data: output,
   };
 };
-

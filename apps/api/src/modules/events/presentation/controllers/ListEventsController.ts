@@ -10,7 +10,7 @@ import { Context } from "hono";
 export const listEventsController: HttpHandler = async (request) => {
   const c = (request as HttpRequest & { context: Context }).context;
   const authContext = getAuthContext(c);
-  
+
   const query: ListEventsQuery = {
     accountId: authContext.accountId,
     tags: request.query.tags ? (request.query.tags as string).split(",") : undefined,
@@ -31,4 +31,3 @@ export const listEventsController: HttpHandler = async (request) => {
     data: output,
   };
 };
-

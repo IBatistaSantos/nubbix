@@ -12,4 +12,3 @@ export const getEventController: HttpHandler = async (request) => {
     data: output,
   };
 };
-
