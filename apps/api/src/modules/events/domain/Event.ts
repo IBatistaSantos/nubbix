@@ -276,6 +276,8 @@ export class Event extends BaseEntity {
       ]);
     }
 
+    EventDate.validateDates([dateProps.date]);
+
     const newDate = EventDate.create(dateProps);
 
     // Verificar duplicidade de (date, startTime, endTime)
@@ -329,6 +331,10 @@ export class Event extends BaseEntity {
           message: "Cannot update finished date",
         },
       ]);
+    }
+
+    if (updates.date) {
+      EventDate.validateDates([updates.date]);
     }
 
     // Criar nova data com as atualizações

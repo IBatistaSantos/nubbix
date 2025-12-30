@@ -1,4 +1,5 @@
 import { ValidationError, ID } from "@nubbix/domain";
+import { isBefore, startOfDay, parseISO } from "date-fns";
 
 export interface EventDateProps {
   id?: string | ID;
@@ -24,6 +25,29 @@ export class EventDate {
     this._endTime = props.endTime;
     this._finished = props.finished;
     this._finishedAt = props.finishedAt;
+  }
+
+  static validateDates(dates: string[]): void {
+    const today = startOfDay(new Date());
+    const pastDates: string[] = [];
+
+    for (const date of dates) {
+      const eventDate = parseISO(date);
+      const eventDateStartOfDay = startOfDay(eventDate);
+
+      if (isBefore(eventDateStartOfDay, today)) {
+        pastDates.push(date);
+      }
+    }
+
+    if (pastDates.length > 0) {
+      throw new ValidationError("Cannot create or update event dates in the past", [
+        {
+          path: "dates[].date",
+          message: "Cannot create or update event dates in the past",
+        },
+      ]);
+    }
   }
 
   static create(props: EventDateProps): EventDate {

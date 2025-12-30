@@ -1,4 +1,4 @@
-import { BaseUseCase, createZodValidator } from "@nubbix/domain";
+import { BaseUseCase, createZodValidator, ValidationError } from "@nubbix/domain";
 import {
   Event,
   EventRepository,
@@ -9,7 +9,7 @@ import {
   EventDate,
 } from "../../domain";
 import { CreateEventInput, CreateEventOutput, createEventSchema } from "../dtos/CreateEventDTO";
-import { ConflictError } from "../../../../shared/errors";
+import { ConflictError, BadRequestError } from "../../../../shared/errors";
 
 export class CreateEventUseCase extends BaseUseCase<CreateEventInput, CreateEventOutput> {
   constructor(private eventRepository: EventRepository) {
@@ -27,6 +27,15 @@ export class CreateEventUseCase extends BaseUseCase<CreateEventInput, CreateEven
 
     if (exists) {
       throw new ConflictError("Event with this URL already exists in this account");
+    }
+
+    try {
+      EventDate.validateDates(input.dates.map((d) => d.date));
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new BadRequestError("Cannot create event with dates in the past");
+      }
+      throw error;
     }
 
     const event = new Event({

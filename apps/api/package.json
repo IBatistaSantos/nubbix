@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@nubbix/domain": "workspace:*",
+    "date-fns": "^4.1.0",
     "drizzle-orm": "0.45.1",
     "hono": "^4.7.0",
     "postgres": "^3.4.5",
