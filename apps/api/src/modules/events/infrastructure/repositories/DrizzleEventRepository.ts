@@ -310,11 +310,13 @@ export class DrizzleEventRepository
   ): Promise<PaginationResult<Event>> {
     const database = this.getDatabase(tx);
 
-    // Construir condições de filtro
-    const conditions = [eq(events.accountId, accountId), isNull(events.deletedAt)];
+    const conditions = [
+      eq(events.accountId, accountId),
+      isNull(events.deletedAt),
+      eq(events.status, StatusValue.ACTIVE),
+    ];
 
     if (filters.tags && filters.tags.length > 0) {
-      // Filtrar por tags usando JSONB contains
       conditions.push(sql`${events.tags} @> ${JSON.stringify(filters.tags)}::jsonb`);
     }
 
@@ -334,7 +336,6 @@ export class DrizzleEventRepository
 
     const whereClause = and(...conditions);
 
-    // Contar total
     const countResult = await database
       .select({ count: sql<number>`count(*)` })
       .from(events)
