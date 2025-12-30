@@ -15,7 +15,7 @@ function LoginForm() {
   const params = useParams();
   const slug = params.slug as string;
 
-  const { register, handleSubmit, errors, isLoading, error } = useLoginController(slug);
+  const { register, handleSubmit, errors, isLoading, errorMessage } = useLoginController(slug);
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -26,11 +26,9 @@ function LoginForm() {
         subtitle="Entre para gerenciar seus eventos e experiências"
       />
 
-      <ErrorMessage
-        message={error instanceof Error ? error.message : error ? "Erro ao fazer login" : ""}
-      />
+      <ErrorMessage message={errorMessage || ""} />
 
-      <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6" noValidate>
         <EmailField
           id="email"
           label="E-mail"
