@@ -60,4 +60,3 @@ export class EventRoutes implements ModuleRoutes {
 }
 
 export const eventRoutes = new EventRoutes();
-
