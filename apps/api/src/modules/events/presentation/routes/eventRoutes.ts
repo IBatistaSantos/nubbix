@@ -8,6 +8,7 @@ import {
   deleteEventController,
   listEventDatesController,
   updateEventDatesController,
+  getEventStatsController,
 } from "../controllers";
 
 export class EventRoutes implements ModuleRoutes {
@@ -23,6 +24,12 @@ export class EventRoutes implements ModuleRoutes {
         method: "GET",
         path: "/events",
         handler: listEventsController,
+        middleware: [authMiddleware()],
+      },
+      {
+        method: "GET",
+        path: "/events/stats",
+        handler: getEventStatsController,
         middleware: [authMiddleware()],
       },
       {

@@ -5,3 +5,4 @@ export * from "./ListEventsController";
 export * from "./DeleteEventController";
 export * from "./ListEventDatesController";
 export * from "./UpdateEventDatesController";
+export * from "./GetEventStatsController";
