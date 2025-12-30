@@ -2,35 +2,30 @@
 @import "../../../packages/ui/src/styles/globals.css";
 
 :root {
-  /* Brand Colors */
-  --brand-primary: 250 84% 58%; /* #4F46E5 */
-  --brand-primary-hover: 250 75% 52%; /* #4338CA */
+  --brand-primary: 250 84% 58%;
+  --brand-primary-hover: 250 75% 52%;
   
-  /* Semantic Colors */
-  --color-background: 0 0% 100%; /* #FFFFFF */
-  --color-foreground: 222 47% 11%; /* #111827 */
-  --color-surface: 0 0% 100%; /* #FFFFFF */
+  --color-background: 0 0% 100%;
+  --color-background-light: 240 5% 96%;
+  --color-background-dark: 220 30% 10%;
+  --color-foreground: 222 47% 11%;
+  --color-surface: 0 0% 100%;
   
-  /* Text Colors */
-  --color-text-primary: 222 47% 11%; /* #111827 */
-  --color-text-secondary: 215 16% 47%; /* #6B7280 */
-  --color-text-muted: 215 13% 65%; /* #9CA3AF */
-  --color-text-label: 215 25% 27%; /* #374151 */
+  --color-text-primary: 222 47% 11%;
+  --color-text-secondary: 215 16% 47%;
+  --color-text-muted: 215 13% 65%;
+  --color-text-label: 215 25% 27%;
   
-  /* Border Colors */
-  --color-border: 220 13% 91%; /* #E5E7EB */
-  --color-border-focus: 250 84% 58%; /* #4F46E5 */
+  --color-border: 220 13% 91%;
+  --color-border-focus: 250 84% 58%;
   
-  /* State Colors */
   --color-error: 0 84% 60%;
   --color-error-bg: 0 93% 94%;
   --color-error-border: 0 84% 60%;
   
-  /* Promo Panel Colors */
-  --color-promo-bg: 250 84% 58%; /* #4F46E5 */
-  --color-promo-surface: 222 47% 11%; /* #1F2937 */
+  --color-promo-bg: 250 84% 58%;
+  --color-promo-surface: 222 47% 11%;
   
-  /* Spacing Scale */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -38,7 +33,6 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   
-  /* Typography */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -46,6 +40,8 @@
 @theme inline {
   --color-brand-primary: hsl(var(--brand-primary));
   --color-brand-primary-hover: hsl(var(--brand-primary-hover));
+  --color-background-light: hsl(var(--color-background-light));
+  --color-background-dark: hsl(var(--color-background-dark));
   --color-text-primary: hsl(var(--color-text-primary));
   --color-text-secondary: hsl(var(--color-text-secondary));
   --color-text-muted: hsl(var(--color-text-muted));

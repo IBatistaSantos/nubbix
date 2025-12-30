@@ -3,6 +3,19 @@ import type { NextRequest } from "next/server";
 
 const COOKIE_NAME = "auth-token";
 
+const PUBLIC_ROUTES = ["/"];
+
+const API_ROUTES = ["/api"];
+
+const PUBLIC_ACCOUNT_ROUTES = [
+  "/login",
+  "/forgot-password",
+  "/reset-password",
+  "/onboarding",
+];
+
+const PROTECTED_ROUTES = ["/dashboard", "/events"];
+
 function getAccountSlugFromPathname(pathname: string): string | null {
   const match = pathname.match(/^\/accounts\/([a-zA-Z0-9_-]+)/);
   return match ? match[1] : null;
@@ -16,41 +29,72 @@ function isValidAccountSlug(slug: string | null): boolean {
   return slugRegex.test(slug);
 }
 
+function isPublicRoute(pathname: string): boolean {
+  return PUBLIC_ROUTES.some((route) => pathname === route);
+}
+
+function isApiRoute(pathname: string): boolean {
+  return API_ROUTES.some((route) => pathname.startsWith(route));
+}
+
+function isPublicAccountRoute(pathname: string): boolean {
+  return PUBLIC_ACCOUNT_ROUTES.some((route) => pathname.includes(route));
+}
+
+function isProtectedRoute(pathname: string): boolean {
+  return PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
+}
+
+function isAccountRoute(pathname: string): boolean {
+  return pathname.startsWith("/accounts/");
+}
+
+function getAuthToken(request: NextRequest): string | undefined {
+  return request.cookies.get(COOKIE_NAME)?.value;
+}
+
+function redirectToLogin(request: NextRequest, accountSlug: string, redirectPath: string): NextResponse {
+  const loginUrl = new URL(`/accounts/${accountSlug}/login`, request.url);
+  loginUrl.searchParams.set("redirect", redirectPath);
+  return NextResponse.redirect(loginUrl);
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/") {
+  if (isPublicRoute(pathname)) {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith("/api")) {
+  if (isApiRoute(pathname)) {
     return NextResponse.next();
   }
 
   const accountSlug = getAccountSlugFromPathname(pathname);
-
   if (accountSlug && !isValidAccountSlug(accountSlug)) {
-    return NextResponse.json({ message: "Invalid account slug format" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Invalid account slug format" },
+      { status: 400 }
+    );
   }
 
-  const isAccountRoute = pathname.startsWith("/accounts/");
-  const isPublicAccountRoute =
-    isAccountRoute &&
-    (pathname.includes("/login") ||
-      pathname.includes("/forgot-password") ||
-      pathname.includes("/reset-password") ||
-      pathname.includes("/onboarding"));
+  if (isAccountRoute(pathname)) {
+    if (isPublicAccountRoute(pathname)) {
+      return NextResponse.next();
+    }
 
-  if (isPublicAccountRoute) {
+    const authToken = getAuthToken(request);
+    if (!authToken) {
+      return redirectToLogin(request, accountSlug!, pathname);
+    }
+
     return NextResponse.next();
   }
 
-  if (isAccountRoute) {
-    const authToken = request.cookies.get(COOKIE_NAME);
+  if (isProtectedRoute(pathname)) {
+    const authToken = getAuthToken(request);
     if (!authToken) {
-      const loginUrl = new URL(`/accounts/${accountSlug}/login`, request.url);
-      loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 

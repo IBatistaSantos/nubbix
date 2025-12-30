@@ -13,6 +13,10 @@ const config: Config = {
           primary: "hsl(var(--brand-primary))",
           "primary-hover": "hsl(var(--brand-primary-hover))",
         },
+        background: {
+          light: "hsl(var(--color-background-light))",
+          dark: "hsl(var(--color-background-dark))",
+        },
         text: {
           primary: "hsl(var(--color-text-primary))",
           secondary: "hsl(var(--color-text-secondary))",

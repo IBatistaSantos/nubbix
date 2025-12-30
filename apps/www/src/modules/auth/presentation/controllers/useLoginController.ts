@@ -26,7 +26,7 @@ export function useLoginController(accountSlug: string) {
   const handleSubmit = form.handleSubmit(async (data) => {
     try {
       await loginMutation.mutateAsync({ input: data, accountSlug });
-      const redirectTo = searchParams.get("redirect") || `/accounts/${accountSlug}`;
+      const redirectTo = searchParams.get("redirect") || "/dashboard";
       router.push(redirectTo);
     } catch (error) {
       console.error("Login error:", error);
