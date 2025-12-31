@@ -85,7 +85,8 @@ export function CreateEventSheet({
               <EventUrlInput
                 register={controller.register}
                 errors={controller.formState.errors}
-                urlError={controller.urlError}
+                setValue={controller.setValue}
+                watch={controller.watch}
               />
 
               <EventDatesManager
