@@ -1,27 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { apiClient } from "@/shared/http/apiClient";
 import { Logo } from "./_components/Logo";
 import { AuthHeader } from "./_components/AuthHeader";
 import { AuthButton } from "./_components/AuthButton";
 import { ErrorMessage } from "./_components/ErrorMessage";
 import { AuthPromoPanel } from "./accounts/[slug]/_components/AuthPromoPanel";
-
-type ValidateSlugResponse = {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  website: string | null;
-  logo: string | null;
-  accountType: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-} | null;
+import { useHttpClient } from "@/shared/http/useHttpClient";
+import { ValidateAccountSlugUseCase } from "@/modules/accounts/application/useCases";
 
 export default function Home() {
   const router = useRouter();
@@ -29,15 +16,19 @@ export default function Home() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const httpClient = useHttpClient();
+  const validateAccountSlugUseCase = useMemo(
+    () => new ValidateAccountSlugUseCase(httpClient),
+    [httpClient]
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
     try {
-      const response = await apiClient<ValidateSlugResponse>(
-        `/accounts/validate-slug?slug=${encodeURIComponent(slug.trim())}`
-      );
+      const response = await validateAccountSlugUseCase.run(slug.trim());
 
       if (response && response.slug) {
         router.push(`/accounts/${response.slug}/login`);
