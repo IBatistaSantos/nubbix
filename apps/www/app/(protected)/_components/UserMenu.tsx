@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { LogOut, User, Settings, ChevronDown } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@nubbix/ui/avatar";
+import { Button } from "@nubbix/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,7 +50,10 @@ export function UserMenu() {
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="relative group outline-none flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <Button
+            variant="ghost"
+            className="relative group h-auto p-0 hover:opacity-80 transition-opacity"
+          >
             <div className="relative">
               <Avatar className="size-10 border-2 border-white shadow-md transition-transform group-hover:scale-105">
                 {user.avatar ? <AvatarImage src={user.avatar} alt={user.name} /> : null}
@@ -60,7 +64,7 @@ export function UserMenu() {
               <div className="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-white rounded-full shadow-sm"></div>
             </div>
             <ChevronDown className="hidden sm:block size-4 text-slate-500 group-hover:text-slate-700 transition-colors" />
-          </button>
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-64 bg-white border-slate-200 shadow-lg">
           <DropdownMenuLabel className="px-3 py-3">
