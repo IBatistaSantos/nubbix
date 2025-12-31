@@ -1,66 +1,36 @@
-import { useCallback } from "react";
-import { useAuthQuery } from "../queries/authQueries";
-import {
-  useLoginMutation,
-  useLogoutMutation,
-  useForgotPasswordMutation,
-  useResetPasswordMutation,
-} from "../mutations/authMutations";
-import type { LoginInput, ForgotPasswordInput, ResetPasswordInput } from "../../application/dtos";
+import { useCallback, useMemo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuthQuery, AUTH_QUERY_KEY } from "../queries/authQueries";
+import { useHttpClient } from "../../../../shared/http/useHttpClient";
+import { LogoutUseCase } from "../../application/useCases";
 
-export function useAuthController(accountSlug?: string) {
+export function useAuthController() {
   const { data: user, isLoading, isError } = useAuthQuery();
-  const loginMutation = useLoginMutation();
-  const logoutMutation = useLogoutMutation();
-  const forgotPasswordMutation = useForgotPasswordMutation();
-  const resetPasswordMutation = useResetPasswordMutation();
+  const queryClient = useQueryClient();
 
-  const login = useCallback(
-    async (input: LoginInput) => {
-      if (!accountSlug) {
-        throw new Error("Account slug is required for login");
-      }
-      return loginMutation.mutateAsync({ input, accountSlug });
+  const httpClient = useHttpClient();
+  const logoutUseCase = useMemo(() => new LogoutUseCase(httpClient), [httpClient]);
+
+  const logoutMutation = useMutation({
+    mutationFn: (): Promise<void> => {
+      return logoutUseCase.run();
     },
-    [accountSlug, loginMutation]
-  );
+    onSuccess: () => {
+      queryClient.setQueryData(AUTH_QUERY_KEY, null);
+      queryClient.removeQueries({ queryKey: AUTH_QUERY_KEY });
+    },
+  });
 
   const logout = useCallback(async () => {
     return logoutMutation.mutateAsync();
   }, [logoutMutation]);
 
-  const forgotPassword = useCallback(
-    async (input: ForgotPasswordInput) => {
-      if (!accountSlug) {
-        throw new Error("Account slug is required for forgot password");
-      }
-      return forgotPasswordMutation.mutateAsync({ input, accountSlug });
-    },
-    [accountSlug, forgotPasswordMutation]
-  );
-
-  const resetPassword = useCallback(
-    async (input: ResetPasswordInput) => {
-      if (!accountSlug) {
-        throw new Error("Account slug is required for reset password");
-      }
-      return resetPasswordMutation.mutateAsync({ input, accountSlug });
-    },
-    [accountSlug, resetPasswordMutation]
-  );
-
   return {
     user,
     isAuthenticated: !!user,
-    isLoading: isLoading || loginMutation.isPending,
+    isLoading,
     isError,
-    login,
     logout,
-    forgotPassword,
-    resetPassword,
-    loginError: loginMutation.error,
     logoutError: logoutMutation.error,
-    forgotPasswordError: forgotPasswordMutation.error,
-    resetPasswordError: resetPasswordMutation.error,
   };
 }
