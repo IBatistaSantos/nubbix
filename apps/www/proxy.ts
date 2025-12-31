@@ -58,7 +58,7 @@ function redirectToLogin(
   return NextResponse.redirect(loginUrl);
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isPublicRoute(pathname)) {
