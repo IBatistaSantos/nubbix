@@ -1,17 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@nubbix/ui/button";
 import { Plus } from "lucide-react";
 import { EventsSummaryCards } from "./_components/EventsSummaryCards";
 import { EventCard } from "./_components/EventCard";
 import { CreateEventCard } from "./_components/CreateEventCard";
+import { CreateEventSheet } from "./_components/CreateEventSheet";
 import { useEventsQuery } from "../../../src/modules/events/presentation/queries/eventQueries";
 import { Skeleton } from "@nubbix/ui/skeleton";
 import { Card } from "@nubbix/ui/card";
-import Link from "next/link";
 
 export default function EventsPage() {
   const { data: events = [], isLoading, error } = useEventsQuery();
+  const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false);
 
   return (
     <div className="flex-grow pt-24 px-6 pb-12">
@@ -24,12 +26,13 @@ export default function EventsPage() {
               Gerencie, acompanhe e evolua seus eventos corporativos em um único lugar.
             </p>
           </div>
-          <Link href="/events/new">
-            <Button className="bg-brand-primary hover:bg-brand-primary-hover text-white px-5 py-3 rounded-lg font-medium flex items-center gap-2 shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/40 transition-all active:scale-95">
-              <Plus className="size-5" />
-              Criar Evento
-            </Button>
-          </Link>
+          <Button
+            onClick={() => setIsCreateSheetOpen(true)}
+            className="bg-brand-primary hover:bg-brand-primary-hover text-white px-5 py-3 rounded-lg font-medium flex items-center gap-2 shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/40 transition-all active:scale-95"
+          >
+            <Plus className="size-5" />
+            Criar Evento
+          </Button>
         </div>
 
         {/* Summary Cards */}
@@ -57,6 +60,8 @@ export default function EventsPage() {
           </div>
         )}
       </div>
+
+      <CreateEventSheet open={isCreateSheetOpen} onOpenChange={setIsCreateSheetOpen} />
     </div>
   );
 }
