@@ -197,29 +197,6 @@ describe("Event", () => {
       expect(() => event.validate()).toThrow(ValidationError);
     });
 
-    it("should throw ValidationError when description is empty", () => {
-      const event = new Event({
-        accountId,
-        name: "Test Event",
-        description: "",
-        type: EventType.digital(),
-        url: "test-event",
-        ticketSales: TicketSales.enabled(),
-        dates: [
-          EventDate.create({
-            id: "date_01",
-            date: "2025-01-01",
-            startTime: "10:00",
-            endTime: "12:00",
-            finished: false,
-            finishedAt: null,
-          }),
-        ],
-      });
-
-      expect(() => event.validate()).toThrow(ValidationError);
-    });
-
     it("should throw ValidationError when maxCapacity is not a positive integer", () => {
       const event = new Event({
         accountId,

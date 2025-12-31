@@ -91,7 +91,7 @@ export interface CreateEventOutput {
 export const createEventSchema = z.object({
   accountId: z.string().uuid("Invalid account ID format"),
   name: z.string().min(1, "Name is required").max(255, "Name cannot exceed 255 characters"),
-  description: z.string().min(1, "Description is required"),
+  description: z.string().min(1, "Description is required").nullable().optional(),
   type: z.enum(["digital", "hybrid", "in-person"], {
     errorMap: () => ({ message: "Type must be digital, hybrid, or in-person" }),
   }),

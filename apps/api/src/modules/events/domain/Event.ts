@@ -117,14 +117,6 @@ export class Event extends BaseEntity {
       });
     }
 
-    // Validar description
-    if (!this._description || this._description.trim().length === 0) {
-      errors.push({
-        path: "description",
-        message: "Description is required",
-      });
-    }
-
     // Validar type
     if (!this._type) {
       errors.push({
