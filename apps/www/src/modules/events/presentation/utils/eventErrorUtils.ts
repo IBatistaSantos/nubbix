@@ -1,4 +1,4 @@
-import { ApiClientError } from "../../../../shared/http/apiClient";
+import { ApiClientError } from "../../../../shared/http/ApiClientError";
 
 export function getEventErrorMessage(error: unknown): string | null {
   if (!error) return null;

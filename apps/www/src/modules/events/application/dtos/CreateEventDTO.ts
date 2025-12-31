@@ -147,3 +147,76 @@ export type EventDateForm = {
   startTime: string;
   endTime: string;
 };
+
+const createEventDateSchema = z.object({
+  date: dateSchema,
+  startTime: timeSchema,
+  endTime: timeSchema,
+});
+
+const createEventAddressSchema = z
+  .object({
+    street: z.string().min(1, "Rua é obrigatória"),
+    city: z.string().min(1, "Cidade é obrigatória"),
+    state: z.string().min(1, "Estado é obrigatório"),
+    zip: z.string().nullable().optional(),
+    country: z.string().min(1, "País é obrigatório"),
+  })
+  .nullable()
+  .optional();
+
+export const createEventSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Nome do evento é obrigatório")
+    .max(255, "Nome não pode exceder 255 caracteres"),
+  description: z.string().optional(),
+  type: z.enum(["digital", "hybrid", "in-person"]),
+  url: z
+    .string()
+    .min(1, "URL do evento é obrigatória")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Use apenas letras, números, hífen e underscore"),
+  address: createEventAddressSchema,
+  maxCapacity: z.number().int().positive().nullable().optional(),
+  ticketSales: z.object({
+    enabled: z.boolean(),
+    status: z.enum(["open", "closed"]),
+  }),
+  tags: z.array(z.string()).max(30, "Máximo de 30 tags permitidas").optional(),
+  dates: z.array(createEventDateSchema).min(1, "Adicione pelo menos uma data"),
+});
+
+export type CreateEventInput = z.infer<typeof createEventSchema>;
+
+export interface CreateEventOutput {
+  id: string;
+  accountId: string;
+  name: string;
+  description: string;
+  type: "digital" | "hybrid" | "in-person";
+  url: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string | null;
+    country: string;
+  } | null;
+  maxCapacity: number | null;
+  ticketSales: {
+    enabled: boolean;
+    status: "open" | "closed";
+  };
+  tags: string[];
+  dates: Array<{
+    id: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    finished: boolean;
+    finishedAt: string | null;
+  }>;
+  status: "active" | "inactive";
+  createdAt: Date;
+  updatedAt: Date;
+}

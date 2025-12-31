@@ -1,4 +1,4 @@
-import { ApiClientError } from "../../../../shared/http/apiClient";
+import { ApiClientError } from "../../../../shared/http/ApiClientError";
 
 /**
  * Extrai uma mensagem de erro amigável ao usuário específica para autenticação
