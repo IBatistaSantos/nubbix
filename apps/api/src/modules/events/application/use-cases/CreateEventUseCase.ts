@@ -25,8 +25,6 @@ export class CreateEventUseCase extends BaseUseCase<CreateEventInput, CreateEven
     const eventUrl = EventUrl.create(input.url);
     const exists = await this.eventRepository.existsByUrl(input.accountId, eventUrl);
 
-    console.log("exists", exists);
-
     if (exists) {
       throw new ConflictError("Event with this URL already exists in this account");
     }
