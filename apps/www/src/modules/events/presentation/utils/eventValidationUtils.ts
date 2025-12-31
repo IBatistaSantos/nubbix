@@ -1,5 +1,16 @@
 import { isBefore, startOfDay, parseISO } from "date-fns";
 
+export function normalizeUrl(value: string): string {
+  if (!value) return "";
+
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/g, "") // Remove caracteres inválidos (espaços, pontos, etc)
+    .replace(/[-_]+/g, "-") // Normaliza sequências de hífens/underscores para um único hífen
+    .replace(/^[-_]+|[-_]+$/g, ""); // Remove hífens/underscores no início e fim
+}
+
 export function validateUrl(value: string): string {
   if (!value) return "";
 

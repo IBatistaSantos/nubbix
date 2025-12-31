@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isBefore, startOfDay, parseISO } from "date-fns";
+import { normalizeUrl } from "../../presentation/utils/eventValidationUtils";
 
 const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve estar no formato YYYY-MM-DD");
 
@@ -41,7 +42,8 @@ export const createEventFormSchema = z
     url: z
       .string()
       .min(1, "URL do evento é obrigatória")
-      .regex(/^[a-zA-Z0-9_-]+$/, "Use apenas letras, números, hífen e underscore"),
+      .transform((val) => normalizeUrl(val))
+      .pipe(z.string().regex(/^[a-zA-Z0-9_-]+$/, "Use apenas letras, números, hífen e underscore")),
     dates: z
       .array(eventDateSchema)
       .min(1, "Adicione pelo menos uma data")

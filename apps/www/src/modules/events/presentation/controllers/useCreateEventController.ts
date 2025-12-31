@@ -15,7 +15,7 @@ import {
   getFieldDisplayName,
   mapBackendErrorsToFormErrors,
 } from "../utils/eventErrorUtils";
-import { generateDateId, validateUrl } from "../utils/eventValidationUtils";
+import { generateDateId, normalizeUrl } from "../utils/eventValidationUtils";
 import { ApiClientError } from "../../../../shared/http/apiClient";
 
 export function useCreateEventController(onSuccess?: () => void) {
@@ -62,11 +62,6 @@ export function useCreateEventController(onSuccess?: () => void) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchType]);
-
-  const watchedUrl = form.watch("url");
-  const urlError = useMemo(() => {
-    return validateUrl(watchedUrl);
-  }, [watchedUrl]);
 
   const addDate = useCallback(() => {
     const newDate: EventDateForm = {
@@ -168,7 +163,7 @@ export function useCreateEventController(onSuccess?: () => void) {
           name: data.name.trim(),
           ...(data.description?.trim() && { description: data.description.trim() }),
           type: data.type as "digital" | "hybrid" | "in-person",
-          url: data.url.trim(),
+          url: normalizeUrl(data.url.trim()),
           dates: data.dates.map((d: { date: string; startTime: string; endTime: string }) => ({
             date: d.date,
             startTime: d.startTime,
@@ -293,7 +288,6 @@ export function useCreateEventController(onSuccess?: () => void) {
     tags: watchTags,
     addTag,
     removeTag,
-    urlError,
     type: watchType,
     isLoading: createEventMutation.isPending,
     error: createEventMutation.error,
