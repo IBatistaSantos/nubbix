@@ -62,3 +62,11 @@ body {
   color: hsl(var(--color-foreground));
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
+
+/* Custom scrollbar styles */
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(203 213 225) transparent;
+  }
+}
