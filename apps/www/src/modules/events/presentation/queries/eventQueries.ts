@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "../../../../shared/http/apiClient";
+import { useMemo } from "react";
 import { useAuthQuery } from "../../../auth/presentation/queries/authQueries";
+import { useHttpClient } from "../../../../shared/http/useHttpClient";
+import { ListEventsUseCase } from "../../application/useCases";
 
 export interface Event {
   id: string;
@@ -35,18 +37,14 @@ export interface Event {
   updatedAt: Date;
 }
 
-export interface ListEventsResponse {
-  events: Event[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
+export type { ListEventsResponse } from "../../application/useCases";
 
 const EVENTS_QUERY_KEY = ["events"] as const;
 
 export function useEventsQuery() {
   const { data: user } = useAuthQuery();
+  const httpClient = useHttpClient();
+  const listEventsUseCase = useMemo(() => new ListEventsUseCase(httpClient), [httpClient]);
 
   return useQuery({
     queryKey: [...EVENTS_QUERY_KEY, user?.accountId],
@@ -55,11 +53,7 @@ export function useEventsQuery() {
         return [];
       }
 
-      const response = await apiClient<ListEventsResponse>("/events", {
-        method: "GET",
-      });
-
-      return response.events;
+      return listEventsUseCase.run();
     },
     enabled: !!user?.accountId,
     staleTime: 30 * 1000, // 30 segundos
