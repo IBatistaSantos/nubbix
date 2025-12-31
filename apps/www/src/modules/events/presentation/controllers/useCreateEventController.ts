@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { useCreateEventMutation, type CreateEventInput } from "../mutations/eventMutations";
+import { useCreateEventMutation } from "../mutations/eventMutations";
+import type { CreateEventInput } from "../../application/dtos/CreateEventDTO";
 import {
   createEventFormSchema,
   type CreateEventFormInput,
@@ -16,10 +17,15 @@ import {
   mapBackendErrorsToFormErrors,
 } from "../utils/eventErrorUtils";
 import { generateDateId, normalizeUrl } from "../utils/eventValidationUtils";
-import { ApiClientError } from "../../../../shared/http/apiClient";
+import { ApiClientError } from "../../../../shared/http/ApiClientError";
+import { useHttpClient } from "../../../../shared/http/useHttpClient";
+import { CreateEventUseCase } from "../../application/useCases";
 
 export function useCreateEventController(onSuccess?: () => void) {
   const createEventMutation = useCreateEventMutation();
+
+  const httpClient = useHttpClient();
+  const createEventUseCase = useMemo(() => new CreateEventUseCase(httpClient), [httpClient]);
 
   const form = useForm<CreateEventFormInput>({
     // @ts-expect-error - Zod v4 type inference issue with @hookform/resolvers
@@ -28,8 +34,7 @@ export function useCreateEventController(onSuccess?: () => void) {
     defaultValues: {
       name: "",
       description: "",
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      type: "" as any,
+      type: "",
       url: "",
       dates: [],
       maxCapacity: undefined,
@@ -189,7 +194,7 @@ export function useCreateEventController(onSuccess?: () => void) {
               : null,
         };
 
-        await createEventMutation.mutateAsync(payload);
+        await createEventMutation.mutateAsync({ input: payload, useCase: createEventUseCase });
 
         toast.success("Evento criado com sucesso!", {
           description: `O evento "${data.name}" foi criado e está disponível na plataforma.`,
@@ -216,8 +221,7 @@ export function useCreateEventController(onSuccess?: () => void) {
             });
 
             Object.entries(formErrors).forEach(([key, message]) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              form.setError(key as any, {
+              form.setError(key as keyof CreateEventFormInput, {
                 type: "server",
                 message,
               });
@@ -270,8 +274,7 @@ export function useCreateEventController(onSuccess?: () => void) {
 
   const resetForm = useCallback(() => {
     form.reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [form]);
 
   return {
     register: form.register,
