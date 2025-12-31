@@ -86,10 +86,18 @@ export class FetchHttpClient implements HttpClient {
 
       const contentType = response.headers.get("content-type");
       const hasContent = contentType?.includes("application/json");
+      const hasBody = response.status !== 204 && response.status !== 205;
 
       let data: unknown = null;
-      if (hasContent) {
-        data = await response.json();
+      if (hasContent && hasBody) {
+        const text = await response.text();
+        if (text) {
+          try {
+            data = JSON.parse(text);
+          } catch {
+            data = text;
+          }
+        }
       }
 
       if (!response.ok) {
@@ -99,6 +107,11 @@ export class FetchHttpClient implements HttpClient {
           response.status,
           errorData.errors
         );
+      }
+
+      // Para respostas 204/205 (No Content), retornar undefined em vez de null
+      if (response.status === 204 || response.status === 205) {
+        return undefined as T;
       }
 
       return data as T;
