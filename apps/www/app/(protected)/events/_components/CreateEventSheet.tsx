@@ -76,8 +76,8 @@ export function CreateEventSheet({
                 errors={controller.formState.errors}
               />
 
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               <EventTypeSelector
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 control={controller.control as any}
                 errors={controller.formState.errors}
               />
@@ -98,8 +98,8 @@ export function CreateEventSheet({
               />
 
               {needsAddress && (
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 <EventAddressForm
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   control={controller.control as any}
                   errors={controller.formState.errors}
                 />
@@ -110,8 +110,10 @@ export function CreateEventSheet({
                 errors={controller.formState.errors}
               />
 
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <EventTicketSalesToggle control={controller.control as any} />
+              <EventTicketSalesToggle
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                control={controller.control as any}
+              />
 
               <EventTagsManager
                 tags={controller.tags}
