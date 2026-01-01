@@ -1,6 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { CreateEventInput, CreateEventOutput } from "../../application/dtos/CreateEventDTO";
-import type { CreateEventUseCase, DeleteEventUseCase } from "../../application/useCases";
+import type { DuplicateEventOutput } from "../../application/dtos/DuplicateEventDTO";
+import type {
+  CreateEventUseCase,
+  DeleteEventUseCase,
+  DuplicateEventUseCase,
+} from "../../application/useCases";
 
 const EVENTS_QUERY_KEY = ["events"] as const;
 
@@ -44,6 +49,40 @@ export function useDeleteEventMutation() {
     },
     onError: (error) => {
       console.error("Error deleting event:", error);
+    },
+  });
+}
+
+export interface DuplicateEventInput {
+  name: string;
+  url: string;
+  dates: Array<{
+    date: string;
+    startTime: string;
+    endTime: string;
+  }>;
+}
+
+export function useDuplicateEventMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      eventId,
+      input,
+      useCase,
+    }: {
+      eventId: string;
+      input: DuplicateEventInput;
+      useCase: DuplicateEventUseCase;
+    }): Promise<DuplicateEventOutput> => {
+      return useCase.run({ eventId, ...input });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EVENTS_QUERY_KEY });
+    },
+    onError: (error) => {
+      console.error("Error duplicating event:", error);
     },
   });
 }
