@@ -9,6 +9,7 @@ import {
   listEventDatesController,
   updateEventDatesController,
   getEventStatsController,
+  duplicateEventController,
 } from "../controllers";
 
 export class EventRoutes implements ModuleRoutes {
@@ -60,6 +61,12 @@ export class EventRoutes implements ModuleRoutes {
         method: "PATCH",
         path: "/events/:id/dates",
         handler: updateEventDatesController,
+        middleware: [authMiddleware()],
+      },
+      {
+        method: "POST",
+        path: "/events/:id/duplicate",
+        handler: duplicateEventController,
         middleware: [authMiddleware()],
       },
     ];
