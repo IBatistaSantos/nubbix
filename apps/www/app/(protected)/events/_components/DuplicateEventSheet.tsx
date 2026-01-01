@@ -18,6 +18,7 @@ import type { Event } from "../../../../src/modules/events/presentation/queries/
 import { useDuplicateEventController } from "../../../../src/modules/events/presentation/controllers/useDuplicateEventController";
 import { EventUrlInput } from "./EventUrlInput";
 import { EventDatesManager } from "./EventDatesManager";
+import type { DuplicateEventFormInput } from "../../../../src/modules/events/application/dtos/DuplicateEventDTO";
 
 interface DuplicateEventSheetProps {
   open: boolean;
@@ -85,14 +86,14 @@ export function DuplicateEventSheet({ open, onOpenChange, event }: DuplicateEven
                 )}
               </div>
 
-              <EventUrlInput
+              <EventUrlInput<DuplicateEventFormInput>
                 register={controller.register}
                 errors={controller.formState.errors}
                 setValue={controller.setValue}
                 watch={controller.watch}
               />
 
-              <EventDatesManager
+              <EventDatesManager<DuplicateEventFormInput>
                 dateFields={controller.dateFields}
                 register={controller.register}
                 errors={controller.formState.errors}

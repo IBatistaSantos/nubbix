@@ -13,7 +13,7 @@ import {
   type EventDateForm,
 } from "../../application/dtos/DuplicateEventDTO";
 import { generateDateId, normalizeUrl } from "../utils/eventValidationUtils";
-import type { DuplicateEventInput } from "../mutations/eventMutations";
+import type { DuplicateEventInput } from "../../application/dtos/DuplicateEventDTO";
 import { useHttpClient } from "../../../../shared/http/useHttpClient";
 import { DuplicateEventUseCase } from "../../application/useCases";
 
@@ -80,7 +80,7 @@ export function useDuplicateEventController(originalEvent: Event, onSuccess?: ()
       try {
         const eventName = data.name.trim();
 
-        const payload: DuplicateEventInput = {
+        const payload: Omit<DuplicateEventInput, "eventId"> = {
           name: eventName,
           url: normalizeUrl(data.url.trim()),
           dates: data.dates.map((d) => ({

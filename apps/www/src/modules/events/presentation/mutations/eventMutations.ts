@@ -1,6 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { CreateEventInput, CreateEventOutput } from "../../application/dtos/CreateEventDTO";
-import type { DuplicateEventOutput } from "../../application/dtos/DuplicateEventDTO";
+import type {
+  DuplicateEventInput,
+  DuplicateEventOutput,
+} from "../../application/dtos/DuplicateEventDTO";
 import type {
   CreateEventUseCase,
   DeleteEventUseCase,
@@ -53,16 +56,6 @@ export function useDeleteEventMutation() {
   });
 }
 
-export interface DuplicateEventInput {
-  name: string;
-  url: string;
-  dates: Array<{
-    date: string;
-    startTime: string;
-    endTime: string;
-  }>;
-}
-
 export function useDuplicateEventMutation() {
   const queryClient = useQueryClient();
 
@@ -73,7 +66,7 @@ export function useDuplicateEventMutation() {
       useCase,
     }: {
       eventId: string;
-      input: DuplicateEventInput;
+      input: Omit<DuplicateEventInput, "eventId">;
       useCase: DuplicateEventUseCase;
     }): Promise<DuplicateEventOutput> => {
       return useCase.run({ eventId, ...input });
