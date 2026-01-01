@@ -33,15 +33,40 @@ export function EventUrlInput<T extends FieldValues>({
   const urlValue = watch("url" as Path<T>);
   const { onChange, ...registerProps } = register("url" as Path<T>);
 
+  const normalizePartial = useCallback((value: string): string => {
+    const validCharsPattern = /[^a-z1234567890áàâãéèêíïóôõöúçñA-Z@\s\/_\-]/g;
+
+    return value
+      .replaceAll(" ", "-")
+      .replaceAll("/", "-")
+      .replaceAll("ç", "-")
+      .replaceAll("@", "-")
+      .replace(validCharsPattern, "-")
+      .replace(/^-+/, "");
+  }, []);
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const normalizedValue = normalizeUrl(e.target.value);
+      const normalizedValue = normalizePartial(e.target.value);
+
       if (e.target.value !== normalizedValue) {
         setValue("url" as Path<T>, normalizedValue as T[Path<T>], { shouldValidate: true });
       }
       onChange(e);
     },
-    [setValue, onChange]
+    [setValue, onChange, normalizePartial]
+  );
+
+  const handleBlur = useCallback(
+    (e: React.FocusEvent<HTMLInputElement>) => {
+      const normalizedValue = normalizeUrl(e.target.value);
+
+      if (e.target.value !== normalizedValue) {
+        setValue("url" as Path<T>, normalizedValue as T[Path<T>], { shouldValidate: true });
+      }
+      registerProps.onBlur?.(e);
+    },
+    [setValue, registerProps]
   );
 
   return (
@@ -63,6 +88,7 @@ export function EventUrlInput<T extends FieldValues>({
             placeholder="nome-do-evento"
             {...registerProps}
             onChange={handleChange}
+            onBlur={handleBlur}
             value={urlValue || ""}
             className={cn(
               "border-0 focus-visible:ring-0 flex-1 h-11",

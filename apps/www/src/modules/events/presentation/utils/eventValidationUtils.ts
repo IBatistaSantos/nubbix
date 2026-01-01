@@ -3,12 +3,16 @@ import { isBefore, startOfDay, parseISO } from "date-fns";
 export function normalizeUrl(value: string): string {
   if (!value) return "";
 
+  const validCharsPattern = /[^a-z1234567890áàâãéèêíïóôõöúçñA-Z@\s\/_\-]/g;
+
   return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9_-]/g, "") // Remove caracteres inválidos (espaços, pontos, etc)
-    .replace(/[-_]+/g, "-") // Normaliza sequências de hífens/underscores para um único hífen
-    .replace(/^[-_]+|[-_]+$/g, ""); // Remove hífens/underscores no início e fim
+    .replaceAll(" ", "-")
+    .replaceAll("/", "-")
+    .replaceAll("ç", "-")
+    .replaceAll("@", "-")
+    .replace(validCharsPattern, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 }
 
 export function validateUrl(value: string): string {
