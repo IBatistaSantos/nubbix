@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { type Event } from "../../../../src/modules/events/presentation/queries/eventQueries";
 import { useDeleteEventController } from "../../../../src/modules/events/presentation/controllers";
+import { DuplicateEventSheet } from "./DuplicateEventSheet";
 import Link from "next/link";
 
 function formatDateRange(dates: Event["dates"]): string {
@@ -225,6 +226,7 @@ interface EventCardProps {
 
 export function EventCard({ event }: EventCardProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDuplicateDialogOpen, setIsDuplicateDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const status = getEventStatus(event);
   const locationInfo = getLocationInfo(event);
@@ -249,7 +251,10 @@ export function EventCard({ event }: EventCardProps) {
     } catch {}
   };
 
-  const handleDuplicateClick = () => {};
+  const handleDuplicateClick = () => {
+    setDropdownOpen(false);
+    setIsDuplicateDialogOpen(true);
+  };
 
   return (
     <>
@@ -382,6 +387,12 @@ export function EventCard({ event }: EventCardProps) {
           </div>
         </div>
       )}
+
+      <DuplicateEventSheet
+        open={isDuplicateDialogOpen}
+        onOpenChange={setIsDuplicateDialogOpen}
+        event={event}
+      />
     </>
   );
 }
