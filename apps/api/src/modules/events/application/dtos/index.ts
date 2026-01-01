@@ -4,3 +4,4 @@ export * from "./GetEventDTO";
 export * from "./ListEventDatesDTO";
 export * from "./UpdateEventDatesDTO";
 export * from "./ListEventsDTO";
+export * from "./DuplicateEventDTO";
