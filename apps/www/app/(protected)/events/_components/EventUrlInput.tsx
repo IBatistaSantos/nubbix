@@ -5,27 +5,39 @@ import { Input } from "@nubbix/ui/input";
 import { Label } from "@nubbix/ui/label";
 import { AlertCircle } from "lucide-react";
 import { cn } from "@nubbix/ui/lib/utils";
-import type { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import type { CreateEventFormInput } from "../../../../src/modules/events/application/dtos/CreateEventDTO";
+import type {
+  UseFormRegister,
+  FieldErrors,
+  UseFormSetValue,
+  UseFormWatch,
+  FieldValues,
+  Path,
+} from "react-hook-form";
 import { normalizeUrl } from "../../../../src/modules/events/presentation/utils/eventValidationUtils";
 
-interface EventUrlInputProps {
-  register: UseFormRegister<CreateEventFormInput>;
-  errors: FieldErrors<CreateEventFormInput>;
+interface EventUrlInputProps<T extends FieldValues> {
+  register: UseFormRegister<T>;
+  errors: FieldErrors<T>;
   urlError?: string;
-  setValue: UseFormSetValue<CreateEventFormInput>;
-  watch: UseFormWatch<CreateEventFormInput>;
+  setValue: UseFormSetValue<T>;
+  watch: UseFormWatch<T>;
 }
 
-export function EventUrlInput({ register, errors, urlError, setValue, watch }: EventUrlInputProps) {
-  const urlValue = watch("url");
-  const { onChange, ...registerProps } = register("url");
+export function EventUrlInput<T extends FieldValues>({
+  register,
+  errors,
+  urlError,
+  setValue,
+  watch,
+}: EventUrlInputProps<T>) {
+  const urlValue = watch("url" as Path<T>);
+  const { onChange, ...registerProps } = register("url" as Path<T>);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const normalizedValue = normalizeUrl(e.target.value);
       if (e.target.value !== normalizedValue) {
-        setValue("url", normalizedValue, { shouldValidate: true });
+        setValue("url" as Path<T>, normalizedValue as any, { shouldValidate: true });
       }
       onChange(e);
     },
@@ -66,7 +78,7 @@ export function EventUrlInput({ register, errors, urlError, setValue, watch }: E
         {(errors.url || urlError) && (
           <p className="text-sm text-red-600 flex items-center gap-1.5 mt-2">
             <AlertCircle className="h-3 w-3" />
-            {errors.url?.message || urlError}
+            {String(errors.url?.message || urlError || "")}
           </p>
         )}
       </div>

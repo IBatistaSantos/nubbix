@@ -6,26 +6,49 @@ import { Label } from "@nubbix/ui/label";
 import { Plus, X, AlertCircle } from "lucide-react";
 import { cn } from "@nubbix/ui/lib/utils";
 import { isPastDate } from "../../../../src/modules/events/presentation/utils/eventValidationUtils";
-import type { FieldErrors, UseFieldArrayReturn, UseFormRegister } from "react-hook-form";
-import type { CreateEventFormInput } from "../../../../src/modules/events/application/dtos/CreateEventDTO";
+import type { FieldErrors, UseFormRegister, FieldValues, Path } from "react-hook-form";
+import type { EventDateForm } from "../../../../src/modules/events/application/dtos/DuplicateEventDTO";
 
-interface EventDatesManagerProps {
-  dateFields: UseFieldArrayReturn<CreateEventFormInput, "dates">["fields"];
-  register: UseFormRegister<CreateEventFormInput>;
-  errors: FieldErrors<CreateEventFormInput>;
+type FormWithDates<T extends FieldValues> = T & {
+  dates: Array<EventDateForm>;
+};
+
+type DatesError =
+  | { message?: string }
+  | Array<{
+      date?: { message?: string };
+      startTime?: { message?: string };
+      endTime?: { message?: string };
+    }>
+  | undefined;
+
+interface EventDatesManagerProps<T extends FieldValues> {
+  dateFields: Array<EventDateForm>;
+  register: UseFormRegister<FormWithDates<T>>;
+  errors: FieldErrors<FormWithDates<T>>;
   onAdd: () => void;
   onRemove: (index: number) => void;
   onUpdate: (index: number, field: "date" | "startTime" | "endTime", value: string) => void;
 }
 
-export function EventDatesManager({
+function isDatesError(error: unknown): error is DatesError {
+  return (
+    error === undefined ||
+    (typeof error === "object" && error !== null && ("message" in error || Array.isArray(error)))
+  );
+}
+
+export function EventDatesManager<T extends FieldValues>({
   dateFields,
   register,
   errors,
   onAdd,
   onRemove,
   onUpdate,
-}: EventDatesManagerProps) {
+}: EventDatesManagerProps<T>) {
+  const datesError: DatesError = isDatesError(errors.dates) ? errors.dates : undefined;
+  const datesArrayError = Array.isArray(datesError) ? datesError : undefined;
+
   return (
     <div className="space-y-5">
       <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
@@ -34,7 +57,7 @@ export function EventDatesManager({
 
       <div className="space-y-4">
         {dateFields.map((field, index) => {
-          const dateError = errors.dates?.[index];
+          const dateError = datesArrayError?.[index];
           const dateValue = field.date || "";
           const isPast = isPastDate(dateValue);
 
@@ -58,7 +81,7 @@ export function EventDatesManager({
 
               <Input
                 type="date"
-                {...register(`dates.${index}.date`)}
+                {...register(`dates.${index}.date` as Path<FormWithDates<T>>)}
                 onChange={(e) => onUpdate(index, "date", e.target.value)}
                 min={new Date().toISOString().split("T")[0]}
                 className={cn("h-11", (isPast || dateError) && "border-red-500")}
@@ -78,7 +101,7 @@ export function EventDatesManager({
                   </Label>
                   <Input
                     type="time"
-                    {...register(`dates.${index}.startTime`)}
+                    {...register(`dates.${index}.startTime` as Path<FormWithDates<T>>)}
                     onChange={(e) => onUpdate(index, "startTime", e.target.value)}
                     className="h-11"
                   />
@@ -90,7 +113,7 @@ export function EventDatesManager({
                   </Label>
                   <Input
                     type="time"
-                    {...register(`dates.${index}.endTime`)}
+                    {...register(`dates.${index}.endTime` as Path<FormWithDates<T>>)}
                     onChange={(e) => onUpdate(index, "endTime", e.target.value)}
                     className="h-11"
                   />
@@ -110,12 +133,15 @@ export function EventDatesManager({
           Adicionar Data
         </Button>
 
-        {errors.dates && typeof errors.dates === "object" && "message" in errors.dates && (
-          <p className="text-sm text-red-600 flex items-center gap-1.5">
-            <AlertCircle className="h-3 w-3" />
-            {errors.dates.message}
-          </p>
-        )}
+        {datesError &&
+          typeof datesError === "object" &&
+          "message" in datesError &&
+          datesError.message && (
+            <p className="text-sm text-red-600 flex items-center gap-1.5">
+              <AlertCircle className="h-3 w-3" />
+              {String(datesError.message)}
+            </p>
+          )}
       </div>
     </div>
   );
