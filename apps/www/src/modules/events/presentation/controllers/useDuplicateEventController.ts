@@ -43,8 +43,6 @@ export function useDuplicateEventController(originalEvent: Event, onSuccess?: ()
     name: "dates",
   });
 
-  const watchDates = form.watch("dates");
-
   const addDate = useCallback(() => {
     const newDate: EventDateForm = {
       id: generateDateId(),
@@ -66,13 +64,14 @@ export function useDuplicateEventController(originalEvent: Event, onSuccess?: ()
 
   const updateDateField = useCallback(
     (index: number, field: keyof EventDateForm, value: string) => {
-      const currentDate = watchDates[index];
+      const currentDates = form.getValues("dates");
+      const currentDate = currentDates[index];
       if (currentDate) {
         updateDate(index, { ...currentDate, [field]: value });
         form.clearErrors("dates");
       }
     },
-    [updateDate, watchDates, form]
+    [updateDate, form]
   );
 
   const handleSubmit = form.handleSubmit(

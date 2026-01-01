@@ -37,7 +37,7 @@ export function EventUrlInput<T extends FieldValues>({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const normalizedValue = normalizeUrl(e.target.value);
       if (e.target.value !== normalizedValue) {
-        setValue("url" as Path<T>, normalizedValue as any, { shouldValidate: true });
+        setValue("url" as Path<T>, normalizedValue as T[Path<T>], { shouldValidate: true });
       }
       onChange(e);
     },
